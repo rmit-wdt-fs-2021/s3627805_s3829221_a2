@@ -8,26 +8,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InternetBankingWebApp.Models
 {
 
-    public enum State
+    public class Payee
     {
-        VIC = 1,
-        NSW = 2,
-        SA = 3,
-        QLD = 4,
-        TAS = 5
-    }
-
-
-    public class Customer
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int CustomerID { get; set; }
+        public int PayeeID { get; set; }
 
         [Required, StringLength(50)]
-        public string CustomerName { get; set; }
-
-        [StringLength(11, MinimumLength = 11)]
-        public string TFN { get; set; }
+        public string PayeeName { get; set; }
 
         [StringLength(50)]
         public string Address { get; set; }
@@ -43,6 +29,6 @@ namespace InternetBankingWebApp.Models
         [Required, StringLength(15), RegularExpression(@"^\+61 [0-9]{4} [0-9]{4}$")]
         public string Phone { get; set; }
 
-        public virtual List<Account> Accounts { get; set; }
+        public virtual List<BillPay> BillPays { get; set; }
     }
 }
