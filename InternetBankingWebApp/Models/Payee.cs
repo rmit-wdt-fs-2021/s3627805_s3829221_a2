@@ -10,9 +10,11 @@ namespace InternetBankingWebApp.Models
 
     public class Payee
     {
+        [Display(Name = "Payee ID")]
         public int PayeeID { get; set; }
 
         [Required, StringLength(50)]
+        [Display(Name = "Payee Name")]
         public string PayeeName { get; set; }
 
         [StringLength(50)]

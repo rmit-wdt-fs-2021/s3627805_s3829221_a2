@@ -16,27 +16,32 @@ namespace InternetBankingWebApp.Models
     }
 
 
-    public class Transaction
-    {
-        public int TransactionID { get; set; }
+    public record Transaction
+    {   
+        [Display(Name = "Transaction ID")]
+        public int TransactionID { get; init; }
 
-        public TransactionType TransactionType { get; set; }
+        [Display(Name = "Type")]
+        public TransactionType TransactionType { get; init; }
 
         [ForeignKey("Account")]
-        public int AccountNumber { get; set; }
-        public virtual Account Account { get; set; }
+        [Display(Name = "Account Number")]
+        public int AccountNumber { get; init; }
+        public virtual Account Account { get; init; }
 
         [ForeignKey("DestAccount")]
-        public int? DestAccountNumber { get; set; }
-        public virtual Account DestAccount { get; set; }
+        [Display(Name = "Destination Account")]
+        public int? DestAccountNumber { get; init; }
+        public virtual Account DestAccount { get; init; }
 
         [DataType(DataType.Currency), Column(TypeName = "money")]
-        public decimal Amount { get; set; }
+        public decimal Amount { get; init; }
 
         [StringLength(255)]
-        public string Comment { get; set; }
+        public string Comment { get; init; }
 
         [Required, DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss tt}", ApplyFormatInEditMode = true)]
-        public DateTime ModifyDate { get; set; }
+        [Display(Name = "Modify Date")]
+        public DateTime ModifyDate { get; init; }
     }
 }

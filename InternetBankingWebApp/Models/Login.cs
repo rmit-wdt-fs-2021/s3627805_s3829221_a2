@@ -10,6 +10,7 @@ namespace InternetBankingWebApp.Models
     public class Login
     {
         [StringLength(8), DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Display(Name = "Login ID")]
         public string LoginID { get; set; }
 
         public int CustomerID { get; set; }
@@ -19,6 +20,7 @@ namespace InternetBankingWebApp.Models
         public string PasswordHash { get; set; }
 
         [Required, DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss tt}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Modify Date")]
         public DateTime ModifyDate { get; set; }
     }
 }

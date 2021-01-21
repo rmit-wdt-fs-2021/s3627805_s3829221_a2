@@ -18,6 +18,7 @@ namespace InternetBankingWebApp.Models
 
     public class BillPay
     {
+        [Display(Name = "Billpay ID")]
         public int BillPayID { get; set; }
 
         [ForeignKey("Account")]
@@ -32,12 +33,14 @@ namespace InternetBankingWebApp.Models
         public decimal Amount { get; set; }
 
         [Required, DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss tt}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Schedule Date")]
         public DateTime ScheduleDate { get; set; }
 
         [Required]
         public Period Period { get; set; }
 
         [Required, DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss tt}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Modify Date")]
         public DateTime ModifyDate { get; set; }
     }
 }

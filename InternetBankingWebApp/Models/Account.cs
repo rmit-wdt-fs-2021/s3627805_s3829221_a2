@@ -18,8 +18,10 @@ namespace InternetBankingWebApp.Models
     public class Account
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Display(Name = "Account Number")]
         public int AccountNumber { get; set; }
 
+        [Display(Name = "Type")]
         public AccountType AccountType { get; set; }
 
         public int CustomerID { get; set; }
@@ -29,6 +31,7 @@ namespace InternetBankingWebApp.Models
         public decimal Balance { get; set; }
 
         [Required, DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss tt}", ApplyFormatInEditMode = true)]
+        [Display(Name = "Modify Date")]
         public DateTime ModifyDate { get; set; }
 
         public virtual List<Transaction> Transactions { get; set; }

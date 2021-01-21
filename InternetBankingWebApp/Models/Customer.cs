@@ -21,9 +21,11 @@ namespace InternetBankingWebApp.Models
     public class Customer
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Display(Name = "Customer ID")]
         public int CustomerID { get; set; }
 
         [Required, StringLength(50)]
+        [Display(Name = "Customer Name")]
         public string CustomerName { get; set; }
 
         [StringLength(11, MinimumLength = 11)]
