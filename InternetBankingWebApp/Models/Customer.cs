@@ -37,7 +37,7 @@ namespace InternetBankingWebApp.Models
         [StringLength(40)]
         public string City { get; set; }
 
-        public State State { get; set; }
+        public State? State { get; set; }
 
         [StringLength(4, MinimumLength = 4)]
         public string PostCode { get; set; }

@@ -27,9 +27,6 @@ namespace InternetBankingWebApp.Models
         public int CustomerID { get; set; }
         public virtual Customer Customer { get; set; }
 
-        [DataType(DataType.Currency), Column(TypeName = "money")]
-        public decimal Balance { get; set; }
-
         [Required, DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss tt}", ApplyFormatInEditMode = true)]
         [Display(Name = "Modify Date")]
         public DateTime ModifyDate { get; set; }

@@ -1,4 +1,4 @@
-﻿using InternetBankingWebApp.Models;
+﻿using InternetBankingWebApp.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
