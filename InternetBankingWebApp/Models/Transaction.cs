@@ -12,7 +12,8 @@ namespace InternetBankingWebApp.Models
         Deposit = 'D',
         Withdrawal = 'W',
         Transfer = 'T',
-        ServiceCharge = 'S'
+        ServiceCharge = 'S',
+        BillPay = 'B'
     }
 
 
