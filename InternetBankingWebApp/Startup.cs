@@ -22,7 +22,11 @@ namespace InternetBankingWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             // Register context class
-            services.AddDbContext<InternetBankingContext>(options => options.UseSqlServer(Configuration.GetConnectionString(nameof(InternetBankingContext))));
+            services.AddDbContext<InternetBankingContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString(nameof(InternetBankingContext)));
+                options.UseLazyLoadingProxies();
+            });
 
             // Store session into the memory of the web server
             services.AddDistributedMemoryCache();

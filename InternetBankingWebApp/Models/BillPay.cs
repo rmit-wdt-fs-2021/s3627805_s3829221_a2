@@ -27,7 +27,7 @@ namespace InternetBankingWebApp.Models
 
         [ForeignKey("Payee")]
         public int PayeeID { get; set; }
-        public Payee Payee { get; set; }
+        public virtual Payee Payee { get; set; }
 
         [DataType(DataType.Currency), Column(TypeName = "money")]
         public decimal Amount { get; set; }

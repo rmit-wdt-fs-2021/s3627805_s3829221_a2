@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using InternetBankingWebApp.Data;
 using InternetBankingWebApp.Models;
+using Microsoft.EntityFrameworkCore;
 using SimpleHashing;
 
 namespace InternetBankingWebApp.Controllers
 {
-    [Route("Mcba")]
+    [Route("/Mcba/MyLogin")]
     public class LoginController : Controller
     {
         private readonly InternetBankingContext _context;
@@ -16,14 +17,13 @@ namespace InternetBankingWebApp.Controllers
         public LoginController(InternetBankingContext context) => _context = context;
 
 
-        [Route("MyLogin")]
         public IActionResult Login() => View();
 
 
         [HttpPost]
         public async Task<IActionResult> Login(string loginID, string password)
         {
-            var login = await _context.Logins.FindAsync(loginID);
+            var login = await _context.Logins.SingleOrDefaultAsync(x => x.LoginID == loginID);
 
             // Login failed
             if(login == null || !PBKDF2.Verify(login.PasswordHash, password))
@@ -44,6 +44,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
+        [Route("[action]")]
         public IActionResult Logout()
         {
             // Remove session
