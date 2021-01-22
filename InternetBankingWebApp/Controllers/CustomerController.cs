@@ -8,7 +8,6 @@ using InternetBankingWebApp.Utilities;
 using InternetBankingWebApp.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace InternetBankingWebApp.Controllers
@@ -44,10 +43,6 @@ namespace InternetBankingWebApp.Controllers
 
             ViewData["AccountList"] = accountList;
 
-            // Create complex session for accountList
-            var accountListJson = JsonConvert.SerializeObject(accountList);
-            HttpContext.Session.SetString("accountList", accountListJson);
-
             return View();
         }
 
@@ -64,12 +59,6 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Receive complex session of accountList
-                var accountListJson = HttpContext.Session.GetString("accountList");
-                var accountList = JsonConvert.DeserializeObject<List<List<Account>>>(accountListJson);
-
-                ViewData["AccountList"] = accountList;
-
                 return View();
             }
             else
@@ -105,12 +94,6 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Receive complex session of accountList
-                var accountListJson = HttpContext.Session.GetString("accountList");
-                var accountList = JsonConvert.DeserializeObject<List<List<Account>>>(accountListJson);
-
-                ViewData["AccountList"] = accountList;
-
                 return View();
             }
             else
@@ -147,12 +130,6 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                // Receive complex session of accountList
-                var accountListJson = HttpContext.Session.GetString("accountList");
-                var accountList = JsonConvert.DeserializeObject<List<List<Account>>>(accountListJson);
-
-                ViewData["AccountList"] = accountList;
-
                 return View();
             }
             else
