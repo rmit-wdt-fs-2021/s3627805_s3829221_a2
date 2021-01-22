@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using InternetBankingWebApp.Data;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace InternetBankingWebApp
 {
@@ -23,6 +21,20 @@ namespace InternetBankingWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Register context class
+            services.AddDbContext<InternetBankingContext>(options => options.UseSqlServer(Configuration.GetConnectionString(nameof(InternetBankingContext))));
+
+            // Store session into the memory of the web server
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                // Make the session cookie essential
+                options.Cookie.IsEssential = true;
+
+                // Add expiry time for session
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
+
             services.AddControllersWithViews();
         }
 
@@ -39,11 +51,11 @@ namespace InternetBankingWebApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
