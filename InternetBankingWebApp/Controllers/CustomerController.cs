@@ -8,6 +8,7 @@ using InternetBankingWebApp.Utilities;
 using InternetBankingWebApp.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace InternetBankingWebApp.Controllers
 {
@@ -36,9 +37,12 @@ namespace InternetBankingWebApp.Controllers
         [Route("[action]")]
         public async Task<IActionResult> ATM()
         {
-            var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+            var customerAccounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+            var allAccounts = await _context.Accounts.ToListAsync();
 
-            return View(accounts);
+            var accountList = new List<List<Account>>(){customerAccounts, allAccounts};
+
+            return View(accountList);
         }
 
 
