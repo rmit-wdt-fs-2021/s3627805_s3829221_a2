@@ -122,6 +122,48 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> Transfer(int accountNumber, int destAccountNumber ,decimal amount, string comment)
+        {
+            var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
+            var destAccount = await _context.Accounts.SingleAsync(x => x.AccountNumber == destAccountNumber);
+
+            if (amount <= 0)
+                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
+            else if (amount.HasMoreThanTwoDecimalPlaces())
+                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
+
+            try
+            {
+                account.Transfer(amount, destAccount, comment);
+            }
+            catch (MinBalanceBreachException)
+            {
+                if (account.AccountType == AccountType.Saving)
+                    ModelState.AddModelError(nameof(amount), "Saving account must maintain a balance above $0.");
+                if (account.AccountType == AccountType.Checking)
+                    ModelState.AddModelError(nameof(amount), "Checking account must maintain a balance above $200.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                // Receive complex session of accountList
+                var accountListJson = HttpContext.Session.GetString("accountList");
+                var accountList = JsonConvert.DeserializeObject<List<List<Account>>>(accountListJson);
+
+                ViewData["AccountList"] = accountList;
+
+                return View();
+            }
+            else
+            {
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+
         [Route("[action]")]
         public IActionResult Privacy() => View();
     }
