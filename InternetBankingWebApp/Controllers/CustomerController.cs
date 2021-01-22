@@ -8,6 +8,7 @@ using InternetBankingWebApp.Utilities;
 using InternetBankingWebApp.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace InternetBankingWebApp.Controllers
@@ -39,10 +40,15 @@ namespace InternetBankingWebApp.Controllers
         {
             var customerAccounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
             var allAccounts = await _context.Accounts.ToListAsync();
+            var accountList = new List<List<Account>>() {customerAccounts, allAccounts};
 
-            var accountList = new List<List<Account>>(){customerAccounts, allAccounts};
+            ViewData["AccountList"] = accountList;
 
-            return View(accountList);
+            // Create complex session for accountList
+            var accountListJson = JsonConvert.SerializeObject(accountList);
+            HttpContext.Session.SetString("accountList", accountListJson);
+
+            return View();
         }
 
 
@@ -58,15 +64,61 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
-                return View(accounts);
+                // Receive complex session of accountList
+                var accountListJson = HttpContext.Session.GetString("accountList");
+                var accountList = JsonConvert.DeserializeObject<List<List<Account>>>(accountListJson);
+
+                ViewData["AccountList"] = accountList;
+
+                return View();
+            }
+            else
+            {
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Withdraw(int accountNumber, decimal amount, string comment)
+        {
+            var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
+
+            if (amount <= 0)
+                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
+            else if (amount.HasMoreThanTwoDecimalPlaces())
+                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
+
+            try
+            {
+                account.Deposit(amount, comment);
+            }
+            catch (MinBalanceBreachException)
+            {
+                if (account.AccountType == AccountType.Saving)
+                    ModelState.AddModelError(nameof(amount), "Saving account must maintain a balance above $0.");
+                if (account.AccountType == AccountType.Checking)
+                    ModelState.AddModelError(nameof(amount), "Checking account must maintain a balance above $200.");
             }
 
-            account.Deposit(amount, comment);
+            if (!ModelState.IsValid)
+            {
+                // Receive complex session of accountList
+                var accountListJson = HttpContext.Session.GetString("accountList");
+                var accountList = JsonConvert.DeserializeObject<List<List<Account>>>(accountListJson);
 
-            await _context.SaveChangesAsync();
+                ViewData["AccountList"] = accountList;
 
-            return RedirectToAction(nameof(Index));
+                return View();
+            }
+            else
+            {
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
         }
 
 
