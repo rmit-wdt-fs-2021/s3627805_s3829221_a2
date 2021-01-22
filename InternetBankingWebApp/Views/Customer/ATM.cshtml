@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "ATM";
+    List<List<Account>> accounts = (List<List<Account>>)ViewData["AccountList"];
+    List<Account> fromAccounts = accounts[0];
+    List<Account> toAccounts = accounts[1];
+}
+
+<div>
+    @*<h1 class="display-4">Welcome, @Model.CustomerName</h1>*@
+
+    <form>
+        @*Transaction Type*@
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Transaction Type</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <select class="form-control" id="sel1">
+                        <option value="" disabled selected>Select your option</option>
+                        
+                        <option>Deposit</option>
+                        <option>Withdraw</option>
+                        <option>Transfer</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        @*From Account*@
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label"> From Account</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <select class="form-control" id="sel1">
+                        <option value="" disabled selected>Select your option</option>
+                        @{
+                            foreach (Account account in fromAccounts)
+                            {
+                                <option> @Html.DisplayFor(x => account.AccountNumber) </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        @*To Account*@
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label">To Account</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <select class="form-control" id="sel1">
+                        <option value="" disabled selected>Select your option</option>
+                        @{
+                            foreach (Account account in toAccounts)
+                            {
+                                <option> @Html.DisplayFor(x => account.AccountNumber) </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
