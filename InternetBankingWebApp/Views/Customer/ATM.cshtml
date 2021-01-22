@@ -1,41 +1,44 @@
 ﻿@{
     ViewData["Title"] = "ATM";
-    List<List<Account>> accounts = (List<List<Account>>)ViewData["AccountList"];
-    List<Account> fromAccounts = accounts[0];
-    List<Account> toAccounts = accounts[1];
+    List<List<Account>> accountList = (List<List<Account>>)ViewData["AccountList"];
+    List<Account> customerAccounts = accountList[0];
+    List<Account> allAccounts = accountList[1];
+
+    var transactionType = "";
+
 }
 
 <div>
     @*<h1 class="display-4">Welcome, @Model.CustomerName</h1>*@
 
-    <form>
+
+
+    <form asp-action="ATM">
         @*Transaction Type*@
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Transaction Type</label>
+            <label for="transactionType" class="col-sm-2 col-form-label">Transaction Type</label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <select class="form-control" id="sel1">
+                    <select class="form-control" id="transactionType" onchange="disableSelection()">
                         <option value="" disabled selected>Select your option</option>
-                        
-                        <option>Deposit</option>
-                        <option>Withdraw</option>
-                        <option>Transfer</option>
+                        <option value="deposit">Deposit</option>
+                        <option value="withdraw">Withdraw</option>
+                        <option value="transfer">Transfer</option>
                     </select>
                 </div>
             </div>
         </div>
-
         @*From Account*@
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label"> From Account</label>
+            <label for="fromAccount" class="col-sm-2 col-form-label"> From Account</label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <select class="form-control" id="sel1">
+                    <select class="form-control" id="fromAccount">
                         <option value="" disabled selected>Select your option</option>
                         @{
-                            foreach (Account account in fromAccounts)
+                            foreach (Account account in customerAccounts)
                             {
-                                <option> @Html.DisplayFor(x => account.AccountNumber) </option>
+                                <option value=@account.AccountNumber> @Html.DisplayFor(x => account.AccountNumber) </option>
                             }
                         }
                     </select>
@@ -45,20 +48,96 @@
 
         @*To Account*@
         <div class="form-group row">
-            <label class="col-sm-2 col-form-label">To Account</label>
+            <label for="toAccount" class="col-sm-2 col-form-label">To Account</label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <select class="form-control" id="sel1">
+                    <select class="form-control" id="toAccount" onchange="">
                         <option value="" disabled selected>Select your option</option>
                         @{
-                            foreach (Account account in toAccounts)
+                            foreach (Account account in allAccounts)
                             {
-                                <option> @Html.DisplayFor(x => account.AccountNumber) </option>
+                                <option value=@account.AccountNumber> @Html.DisplayFor(x => account.AccountNumber) </option>
                             }
                         }
                     </select>
                 </div>
             </div>
         </div>
+
+        @*Amount*@
+        <div class="form-group row">
+            <label for="amount" class="col-sm-2 col-form-label">Amount</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <input type="number" class="form-control" id="amount">
+                </div>
+            </div>
+        </div>
+
+        @*comment*@
+        <div class="form-group row">
+            <label for="comment" class="col-sm-2 col-form-label">Comment</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="comment">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-primary" />
+        </div>
     </form>
+
+    <script>
+        function disableSelection() {
+            var type = document.getElementById("transactionType");
+            var toAccount = document.getElementById("toAccount");
+            var fromAccount = document.getElementById("fromAccount");
+
+            if (type.value == "deposit") {
+                toAccount.disabled = false;
+                
+                fromAccount.disabled = true;
+                fromAccount.value = null;
+            }
+            else if (type.value == "withdraw") {
+                toAccount.disabled = true;
+                toAccount.value = null;
+
+                fromAccount.disabled = false;
+            }
+            else if (type.value == "transfer") {
+
+                toAccount.disabled = false;
+                fromAccount.disabled = false;
+            } else {
+                toAccount.disabled = true;
+                fromAccount.disabled = true;
+            }
+        }
+
+        @*function submit() {
+            var type = document.getElementById("transactionType");
+            if (type.value == "deposit") {
+                
+            }
+            else if (type.value == "withdraw") {
+
+            }
+            else if (type.value == "transfer") {
+
+            }
+            else {
+
+            }
+        }*@
+
+
+        @*function accountValidation() {
+            var toAccount = document.getElementById("toAccount");
+            var fromAccount = document.getElementById("fromAccount");
+
+        }*@
+    </script>
 </div>
