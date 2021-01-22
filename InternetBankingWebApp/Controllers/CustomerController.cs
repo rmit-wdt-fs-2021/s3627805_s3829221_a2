@@ -9,6 +9,7 @@ using InternetBankingWebApp.Filters;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Collections.Generic;
+using X.PagedList;
 
 namespace InternetBankingWebApp.Controllers
 {
@@ -48,6 +49,18 @@ namespace InternetBankingWebApp.Controllers
 
 
         [HttpPost]
+        public async Task<IActionResult> ATMAction(TransactionType transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
+        {
+            if (transactionType == TransactionType.Deposit)
+                return await Deposit(accountNumber, amount, comment);
+            else if (transactionType == TransactionType.Withdrawal)
+                return await Withdraw(accountNumber, amount, comment);
+            else
+                return await Transfer(accountNumber, destAccountNumber, amount, comment);
+        }
+
+
+        //[HttpPost]
         public async Task<IActionResult> Deposit(int accountNumber, decimal amount, string comment)
         {
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
@@ -63,6 +76,7 @@ namespace InternetBankingWebApp.Controllers
             }
             else
             {
+                account.Deposit(amount, comment);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
@@ -70,7 +84,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> Withdraw(int accountNumber, decimal amount, string comment)
         {
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
@@ -82,7 +96,7 @@ namespace InternetBankingWebApp.Controllers
 
             try
             {
-                account.Deposit(amount, comment);
+                account.Withdraw(amount, comment);
             }
             catch (MinBalanceBreachException)
             {
@@ -105,7 +119,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> Transfer(int accountNumber, int destAccountNumber ,decimal amount, string comment)
         {
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
