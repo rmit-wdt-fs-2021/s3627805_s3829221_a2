@@ -19,7 +19,10 @@
             <tr>
                 <td>@Html.DisplayFor(x => account.AccountNumber)</td>
                 <td>@Html.DisplayFor(x => account.AccountType)</td>
-                <td>@Html.DisplayFor(x => account.GetBalance().ToString("0.00"))</td>
+                @{ 
+                    string balance = account.GetBalance().ToString("0.00");
+                }
+                <td>@Html.DisplayFor(x => balance)</td>
                 <td>
                     <a class="btn btn-primary"
                        asp-action="Deposit" asp-route-id="@account.AccountNumber">Deposit</a>
