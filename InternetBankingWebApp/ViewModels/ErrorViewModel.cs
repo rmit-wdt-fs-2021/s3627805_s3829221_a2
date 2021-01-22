@@ -1,6 +1,6 @@
 using System;
 
-namespace InternetBankingWebApp.ViewModels
+namespace InternetBankingWebApp.Models
 {
     public class ErrorViewModel
     {
