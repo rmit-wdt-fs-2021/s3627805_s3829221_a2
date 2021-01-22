@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using InternetBankingWebApp.Utilities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -83,7 +83,22 @@ namespace InternetBankingWebApp.Models
 
         public void Withdraw(decimal amount, string comment)
         {
-            Transactions.Add(
+            decimal serviceFee = HasServiceFee() ? 0.1m : 0;
+
+            // If minimum balance is breached
+            if (AccountType == AccountType.Saving && GetBalance() - amount - serviceFee < 0)
+            {
+                throw new MinBalanceBreachException();
+            }
+            else if (AccountType == AccountType.Checking && GetBalance() - amount - serviceFee < 200)
+            {
+                throw new MinBalanceBreachException();
+            }
+
+            // Withdraw
+            else
+            {
+                Transactions.Add(
                 new Transaction
                 {
                     TransactionType = TransactionType.Withdrawal,
@@ -94,46 +109,59 @@ namespace InternetBankingWebApp.Models
                     ModifyDate = DateTime.UtcNow
                 });
 
-            if (HasServiceFee())
-            {
-                decimal serviceFee = 0.1m;
-                ServiceCharge(serviceFee, "Service charge on withdrawal");
+                // If service charge applies
+                if (serviceFee != 0)
+                    ServiceCharge(serviceFee, "Service charge on withdrawal");
             }
         }
 
 
         public void Transfer(decimal amount, Account destAccount, string comment)
         {
-            // Debit this account
-            Transactions.Add(
-                new Transaction
-                {
-                    TransactionType = TransactionType.Transfer,
-                    AccountNumber = AccountNumber,
-                    Account = this,
-                    DestAccountNumber = destAccount.AccountNumber,
-                    DestAccount = destAccount,
-                    Amount = amount,
-                    Comment = comment,
-                    ModifyDate = DateTime.UtcNow
-                });
+            decimal serviceFee = HasServiceFee() ? 0.2m : 0;
 
-            if (HasServiceFee())
+            // If minimum balance is breached
+            if (AccountType == AccountType.Saving && GetBalance() - amount - serviceFee < 0)
             {
-                decimal serviceFee = 0.2m;
-                ServiceCharge(serviceFee, "Service charge on transfer");
+                throw new MinBalanceBreachException();
+            }
+            else if (AccountType == AccountType.Checking && GetBalance() - amount - serviceFee < 200)
+            {
+                throw new MinBalanceBreachException();
             }
 
-            // Credit destination account
-            destAccount.Transactions.Add(
-                new Transaction
-                {
-                    TransactionType = TransactionType.Transfer,
-                    AccountNumber = destAccount.AccountNumber,
-                    Account = destAccount,
-                    Amount = amount,
-                    ModifyDate = DateTime.UtcNow
-                });
+            // Transfer
+            else
+            {
+                // Debit this account
+                Transactions.Add(
+                    new Transaction
+                    {
+                        TransactionType = TransactionType.Transfer,
+                        AccountNumber = AccountNumber,
+                        Account = this,
+                        DestAccountNumber = destAccount.AccountNumber,
+                        DestAccount = destAccount,
+                        Amount = amount,
+                        Comment = comment,
+                        ModifyDate = DateTime.UtcNow
+                    });
+
+                // If service charge applies
+                if (HasServiceFee())
+                    ServiceCharge(serviceFee, "Service charge on transfer");
+
+                // Credit destination account
+                destAccount.Transactions.Add(
+                    new Transaction
+                    {
+                        TransactionType = TransactionType.Transfer,
+                        AccountNumber = destAccount.AccountNumber,
+                        Account = destAccount,
+                        Amount = amount,
+                        ModifyDate = DateTime.UtcNow
+                    });
+            }
         }
 
 
