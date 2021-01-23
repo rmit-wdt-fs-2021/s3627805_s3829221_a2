@@ -52,7 +52,7 @@ namespace InternetBankingWebApp.Controllers
         public async Task<IActionResult> ATMAction(TransactionType transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
         {
             if (transactionType == TransactionType.Deposit)
-                return await Deposit(accountNumber, amount, comment);
+                return await Deposit(destAccountNumber, amount, comment);
             else if (transactionType == TransactionType.Withdrawal)
                 return await Withdraw(accountNumber, amount, comment);
             else
