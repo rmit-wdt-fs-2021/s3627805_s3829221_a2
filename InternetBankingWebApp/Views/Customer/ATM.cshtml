@@ -1,14 +1,10 @@
-﻿@Model TransactionType;
-@{
+﻿@{
     ViewData["Title"] = "ATM";
     List<List<Account>> accountList = (List<List<Account>>)ViewData["AccountList"];
     List<Account> customerAccounts = accountList[0];
     List<Account> allAccounts = accountList[1];
 
-
-
 }
-
 <div>
     @*<h1 class="display-4">Welcome, @Model.CustomerName</h1>*@
 
