@@ -1,10 +1,11 @@
-﻿@{
+﻿@Model TransactionType;
+@{
     ViewData["Title"] = "ATM";
     List<List<Account>> accountList = (List<List<Account>>)ViewData["AccountList"];
     List<Account> customerAccounts = accountList[0];
     List<Account> allAccounts = accountList[1];
 
-    var transactionType = "";
+
 
 }
 
@@ -13,17 +14,17 @@
 
 
 
-    <form asp-action="ATM">
+    <form asp-controller="Customer" asp-action="ATMAction">
         @*Transaction Type*@
         <div class="form-group row">
             <label for="transactionType" class="col-sm-2 col-form-label">Transaction Type</label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <select class="form-control" id="transactionType" onchange="disableSelection()">
+                    <select class="form-control" id="transactionType" name="transactionType" onchange="disableSelection()">
                         <option value="" disabled selected>Select your option</option>
-                        <option value="deposit">Deposit</option>
-                        <option value="withdraw">Withdraw</option>
-                        <option value="transfer">Transfer</option>
+                        <option value="@TransactionType.Deposit">Deposit</option>
+                        <option value="@TransactionType.Withdrawal">Withdraw</option>
+                        <option value="@TransactionType.Transfer">Transfer</option>
                     </select>
                 </div>
             </div>
@@ -33,7 +34,7 @@
             <label for="fromAccount" class="col-sm-2 col-form-label"> From Account</label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <select class="form-control" id="fromAccount">
+                    <select class="form-control" id="fromAccount" name="accountNumber">
                         <option value="" disabled selected>Select your option</option>
                         @{
                             foreach (Account account in customerAccounts)
@@ -51,7 +52,7 @@
             <label for="toAccount" class="col-sm-2 col-form-label">To Account</label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <select class="form-control" id="toAccount" onchange="">
+                    <select class="form-control" id="toAccount" name="destAccountNumber" onchange="">
                         <option value="" disabled selected>Select your option</option>
                         @{
                             foreach (Account account in allAccounts)
@@ -69,7 +70,7 @@
             <label for="amount" class="col-sm-2 col-form-label">Amount</label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <input type="number" class="form-control" id="amount">
+                    <input type="number" class="form-control" id="amount" name="amount">
                 </div>
             </div>
         </div>
@@ -79,13 +80,13 @@
             <label for="comment" class="col-sm-2 col-form-label">Comment</label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <input type="text" class="form-control" id="comment">
+                    <input type="text" class="form-control" id="comment" name="comment">
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            <input type="submit" value="Login" class="btn btn-primary" />
+            <input type="submit" value="Submit" class="btn btn-primary" />
         </div>
     </form>
 
@@ -95,19 +96,19 @@
             var toAccount = document.getElementById("toAccount");
             var fromAccount = document.getElementById("fromAccount");
 
-            if (type.value == "deposit") {
+            if (type.value == "@TransactionType.Deposit") {
                 toAccount.disabled = false;
-                
+
                 fromAccount.disabled = true;
                 fromAccount.value = null;
             }
-            else if (type.value == "withdraw") {
+            else if (type.value == "@TransactionType.Withdrawal") {
                 toAccount.disabled = true;
                 toAccount.value = null;
 
                 fromAccount.disabled = false;
             }
-            else if (type.value == "transfer") {
+            else if (type.value == "@TransactionType.Transfer") {
 
                 toAccount.disabled = false;
                 fromAccount.disabled = false;
@@ -116,28 +117,5 @@
                 fromAccount.disabled = true;
             }
         }
-
-        @*function submit() {
-            var type = document.getElementById("transactionType");
-            if (type.value == "deposit") {
-                
-            }
-            else if (type.value == "withdraw") {
-
-            }
-            else if (type.value == "transfer") {
-
-            }
-            else {
-
-            }
-        }*@
-
-
-        @*function accountValidation() {
-            var toAccount = document.getElementById("toAccount");
-            var fromAccount = document.getElementById("fromAccount");
-
-        }*@
     </script>
 </div>
