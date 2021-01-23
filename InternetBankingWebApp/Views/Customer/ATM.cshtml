@@ -1,0 +1,121 @@
+﻿@Model TransactionType;
+@{
+    ViewData["Title"] = "ATM";
+    List<List<Account>> accountList = (List<List<Account>>)ViewData["AccountList"];
+    List<Account> customerAccounts = accountList[0];
+    List<Account> allAccounts = accountList[1];
+
+
+
+}
+
+<div>
+    @*<h1 class="display-4">Welcome, @Model.CustomerName</h1>*@
+
+
+
+    <form asp-controller="Customer" asp-action="ATMAction">
+        @*Transaction Type*@
+        <div class="form-group row">
+            <label for="transactionType" class="col-sm-2 col-form-label">Transaction Type</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <select class="form-control" id="transactionType" name="transactionType" onchange="disableSelection()">
+                        <option value="" disabled selected>Select your option</option>
+                        <option value="@TransactionType.Deposit">Deposit</option>
+                        <option value="@TransactionType.Withdrawal">Withdraw</option>
+                        <option value="@TransactionType.Transfer">Transfer</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        @*From Account*@
+        <div class="form-group row">
+            <label for="fromAccount" class="col-sm-2 col-form-label"> From Account</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <select class="form-control" id="fromAccount" name="accountNumber">
+                        <option value="" disabled selected>Select your option</option>
+                        @{
+                            foreach (Account account in customerAccounts)
+                            {
+                                <option value=@account.AccountNumber> @Html.DisplayFor(x => account.AccountNumber) </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        @*To Account*@
+        <div class="form-group row">
+            <label for="toAccount" class="col-sm-2 col-form-label">To Account</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <select class="form-control" id="toAccount" name="destAccountNumber" onchange="">
+                        <option value="" disabled selected>Select your option</option>
+                        @{
+                            foreach (Account account in allAccounts)
+                            {
+                                <option value=@account.AccountNumber> @Html.DisplayFor(x => account.AccountNumber) </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        @*Amount*@
+        <div class="form-group row">
+            <label for="amount" class="col-sm-2 col-form-label">Amount</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <input type="number" class="form-control" id="amount" name="amount">
+                </div>
+            </div>
+        </div>
+
+        @*comment*@
+        <div class="form-group row">
+            <label for="comment" class="col-sm-2 col-form-label">Comment</label>
+            <div class="col-sm-10">
+                <div class="form-group">
+                    <input type="text" class="form-control" id="comment" name="comment">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Submit" class="btn btn-primary" />
+        </div>
+    </form>
+
+    <script>
+        function disableSelection() {
+            var type = document.getElementById("transactionType");
+            var toAccount = document.getElementById("toAccount");
+            var fromAccount = document.getElementById("fromAccount");
+
+            if (type.value == "@TransactionType.Deposit") {
+                toAccount.disabled = false;
+
+                fromAccount.disabled = true;
+                fromAccount.value = null;
+            }
+            else if (type.value == "@TransactionType.Withdrawal") {
+                toAccount.disabled = true;
+                toAccount.value = null;
+
+                fromAccount.disabled = false;
+            }
+            else if (type.value == "@TransactionType.Transfer") {
+
+                toAccount.disabled = false;
+                fromAccount.disabled = false;
+            } else {
+                toAccount.disabled = true;
+                fromAccount.disabled = true;
+            }
+        }
+    </script>
+</div>
