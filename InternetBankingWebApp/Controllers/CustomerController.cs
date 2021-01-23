@@ -23,7 +23,6 @@ namespace InternetBankingWebApp.Controllers
         // Get session of customer ID from login page
         private int _customerID => HttpContext.Session.GetInt32(nameof(Customer.CustomerID)).Value;
 
-
         public CustomerController(InternetBankingContext context) => _context = context;
 
 
@@ -31,6 +30,7 @@ namespace InternetBankingWebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var customer = await _context.Customers.Include(x => x.Accounts).SingleAsync(x => x.CustomerID == _customerID);
+
             return View(customer);
         }
 
@@ -75,6 +75,7 @@ namespace InternetBankingWebApp.Controllers
             }
             else
             {
+                account.Deposit(amount, comment);
                 await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
