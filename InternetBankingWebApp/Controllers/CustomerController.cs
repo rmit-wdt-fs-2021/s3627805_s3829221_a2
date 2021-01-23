@@ -10,9 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Collections.Generic;
 using X.PagedList;
+using InternetBankingWebApp.ViewModels;
 
 namespace InternetBankingWebApp.Controllers
 {
+
     [AuthorizeCustomer, Route("MyBank")]
     public class CustomerController : Controller
     {
@@ -21,7 +23,6 @@ namespace InternetBankingWebApp.Controllers
         // Get session of customer ID from login page
         private int _customerID => HttpContext.Session.GetInt32(nameof(Customer.CustomerID)).Value;
 
-
         public CustomerController(InternetBankingContext context) => _context = context;
 
 
@@ -29,7 +30,6 @@ namespace InternetBankingWebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var customer = await _context.Customers.Include(x => x.Accounts).SingleAsync(x => x.CustomerID == _customerID);
-
 
             return View(customer);
         }
@@ -52,7 +52,7 @@ namespace InternetBankingWebApp.Controllers
         public async Task<IActionResult> ATMAction(TransactionType transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
         {
             if (transactionType == TransactionType.Deposit)
-                return await Deposit(accountNumber, amount, comment);
+                return await Deposit(destAccountNumber, amount, comment);
             else if (transactionType == TransactionType.Withdrawal)
                 return await Withdraw(accountNumber, amount, comment);
             else
@@ -60,7 +60,6 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        //[HttpPost]
         public async Task<IActionResult> Deposit(int accountNumber, decimal amount, string comment)
         {
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
@@ -84,7 +83,6 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        //[HttpPost]
         public async Task<IActionResult> Withdraw(int accountNumber, decimal amount, string comment)
         {
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
@@ -119,7 +117,6 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        //[HttpPost]
         public async Task<IActionResult> Transfer(int accountNumber, int destAccountNumber ,decimal amount, string comment)
         {
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
@@ -152,6 +149,22 @@ namespace InternetBankingWebApp.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+
+        public async Task<IActionResult> MyStatement()
+        {
+            var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+            var statementList = new List<MyStatementViewModel>();
+            
+            foreach (var account in accounts)
+            {
+                var myStatement = new MyStatementViewModel(account);
+                await myStatement.CreatePagedList(1, 4);
+                statementList.Add(myStatement);
+            }
+
+            return View(statementList);
         }
 
 
