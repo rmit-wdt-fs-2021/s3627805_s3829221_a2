@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using InternetBankingWebApp.Models;
 using X.PagedList;
 
@@ -21,9 +18,9 @@ namespace InternetBankingWebApp.ViewModels
         }
 
 
-        public async Task CreatePagedList(int initialPage, int pageSize)
+        public void CreatePagedList(int initialPage, int pageSize)
         {
-            PagedList = (PagedList<Transaction>)await Account.Transactions.ToPagedListAsync(initialPage, pageSize);
+            PagedList = (PagedList<Transaction>)Account.Transactions.ToPagedList(initialPage, pageSize);
         }
     }
 }

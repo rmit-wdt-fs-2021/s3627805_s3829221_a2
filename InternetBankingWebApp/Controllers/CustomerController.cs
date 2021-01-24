@@ -52,7 +52,7 @@ namespace InternetBankingWebApp.Controllers
         public async Task<IActionResult> ATMAction(TransactionType transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
         {
             if (transactionType == TransactionType.Deposit)
-                return await Deposit(destAccountNumber, amount, comment);
+                return await Deposit(accountNumber, amount, comment);
             else if (transactionType == TransactionType.Withdrawal)
                 return await Withdraw(accountNumber, amount, comment);
             else
@@ -71,7 +71,7 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View();
+                return RedirectToAction(nameof(ATM));
             }
             else
             {
@@ -106,7 +106,7 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View();
+                return RedirectToAction(nameof(ATM));
             }
             else
             {
@@ -141,7 +141,7 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View();
+                return RedirectToAction(nameof(ATM));
             }
             else
             {
@@ -152,6 +152,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
+        [Route("[action]")]
         public async Task<IActionResult> MyStatement()
         {
             var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
@@ -160,12 +161,19 @@ namespace InternetBankingWebApp.Controllers
             foreach (var account in accounts)
             {
                 var myStatement = new MyStatementViewModel(account);
-                await myStatement.CreatePagedList(1, 4);
+                myStatement.CreatePagedList(1, 4);
                 statementList.Add(myStatement);
             }
 
             return View(statementList);
         }
+
+
+        //[Route("[action]")]
+        //public async Task<IActionResult> BillPay()
+        //{
+        //    var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+        //}
 
 
         [Route("[action]")]
