@@ -4,6 +4,8 @@
     List<Account> customerAccounts = accountList[0];
     List<Account> allAccounts = accountList[1];
 
+    @*List<Account> accounts = null;*@
+
 }
 <div>
     @*<h1 class="display-4">Welcome, @Model.CustomerName</h1>*@
@@ -27,10 +29,10 @@
         </div>
         @*From Account*@
         <div class="form-group row">
-            <label for="fromAccount" class="col-sm-2 col-form-label"> From Account</label>
+            <label for="account" class="col-sm-2 col-form-label"> Account </label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <select class="form-control" id="fromAccount" name="accountNumber">
+                    <select class="form-control" id="account" name="accountNumber">
                         <option value="" disabled selected>Select your option</option>
                         @{
                             foreach (Account account in customerAccounts)
@@ -45,10 +47,10 @@
 
         @*To Account*@
         <div class="form-group row">
-            <label for="toAccount" class="col-sm-2 col-form-label">To Account</label>
+            <label for="destAccount" class="col-sm-2 col-form-label">Destination account</label>
             <div class="col-sm-10">
                 <div class="form-group">
-                    <select class="form-control" id="toAccount" name="destAccountNumber" onchange="">
+                    <select class="form-control" id="destAccount" name="destAccountNumber" onchange="">
                         <option value="" disabled selected>Select your option</option>
                         @{
                             foreach (Account account in allAccounts)
@@ -89,28 +91,22 @@
     <script>
         function disableSelection() {
             var type = document.getElementById("transactionType");
-            var toAccount = document.getElementById("toAccount");
-            var fromAccount = document.getElementById("fromAccount");
+            var account = document.getElementById("account");
+            var destAccount = document.getElementById("destAccount");
 
-            if (type.value == "@TransactionType.Deposit") {
-                toAccount.disabled = false;
+            if (type.value == "@TransactionType.Deposit" || type.value == "@TransactionType.Withdrawal") {
+                account.disabled = false;
 
-                fromAccount.disabled = true;
-                fromAccount.value = null;
-            }
-            else if (type.value == "@TransactionType.Withdrawal") {
-                toAccount.disabled = true;
-                toAccount.value = null;
-
-                fromAccount.disabled = false;
+                destAccount.disabled = true;
+                destAccount.value = null;
             }
             else if (type.value == "@TransactionType.Transfer") {
 
-                toAccount.disabled = false;
-                fromAccount.disabled = false;
+                destAccount.disabled = false;
+                destAccount.disabled = false;
             } else {
-                toAccount.disabled = true;
-                fromAccount.disabled = true;
+                account.disabled = true;
+                destAccount.disabled = true;
             }
         }
     </script>
