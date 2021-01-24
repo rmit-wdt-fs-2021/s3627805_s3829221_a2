@@ -153,7 +153,7 @@ namespace InternetBankingWebApp.Controllers
 
 
         [Route("[action]")]
-        public async Task<IActionResult> MyStatement()
+        public async Task<IActionResult> MyStatement(int? page = 1)
         {
             var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
             var statementList = new List<MyStatementViewModel>();
@@ -161,7 +161,7 @@ namespace InternetBankingWebApp.Controllers
             foreach (var account in accounts)
             {
                 var myStatement = new MyStatementViewModel(account);
-                myStatement.CreatePagedList(1, 4);
+                myStatement.CreatePagedList(page, 4);
                 statementList.Add(myStatement);
             }
 
@@ -169,11 +169,13 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        //[Route("[action]")]
-        //public async Task<IActionResult> BillPay()
-        //{
-        //    var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
-        //}
+        [Route("[action]")]
+        public async Task<IActionResult> BillPay()
+        {
+            var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+
+            return View(accounts);
+        }
 
 
         [Route("[action]")]

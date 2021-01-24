@@ -18,9 +18,9 @@ namespace InternetBankingWebApp.ViewModels
         }
 
 
-        public void CreatePagedList(int initialPage, int pageSize)
+        public void CreatePagedList(int? page, int pageSize)
         {
-            PagedList = Account.Transactions.ToPagedList(initialPage, pageSize);
+            PagedList = Account.Transactions.ToPagedList((int)page, pageSize);
         }
     }
 }
