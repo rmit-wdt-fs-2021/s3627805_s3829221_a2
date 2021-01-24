@@ -161,7 +161,7 @@ namespace InternetBankingWebApp.Controllers
             foreach (var account in accounts)
             {
                 var myStatement = new MyStatementViewModel(account);
-                await myStatement.CreatePagedList(1, 4);
+                myStatement.CreatePagedList(1, 4);
                 statementList.Add(myStatement);
             }
 
