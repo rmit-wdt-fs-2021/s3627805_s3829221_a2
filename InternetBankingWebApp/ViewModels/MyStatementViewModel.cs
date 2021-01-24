@@ -8,7 +8,7 @@ namespace InternetBankingWebApp.ViewModels
     {
         public Account Account { get; set; }
         public decimal Balance { get; set; }
-        public PagedList<Transaction> PagedList { get; set; }
+        public IPagedList<Transaction> PagedList { get; set; }
 
 
         public MyStatementViewModel(Account account)
@@ -20,7 +20,7 @@ namespace InternetBankingWebApp.ViewModels
 
         public void CreatePagedList(int initialPage, int pageSize)
         {
-            PagedList = (PagedList<Transaction>)Account.Transactions.ToPagedList(initialPage, pageSize);
+            PagedList = Account.Transactions.ToPagedList(initialPage, pageSize);
         }
     }
 }
