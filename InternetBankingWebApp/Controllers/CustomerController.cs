@@ -152,6 +152,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
+        [Route("[action]")]
         public async Task<IActionResult> MyStatement()
         {
             var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
@@ -168,9 +169,10 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
+        //[Route("[action]")]
         //public async Task<IActionResult> BillPay()
         //{
-
+        //    var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
         //}
 
 
