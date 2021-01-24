@@ -1,0 +1,76 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Mvc.Core.Common
+@using InternetBankingWebApp.ViewModels;
+@model List<MyStatementViewModel>
+
+@{
+    var myStatements = Model;
+    ViewData["Title"] = "My Statement";
+    MyStatementViewModel selectedStatement = null;
+    PagedList<Transaction> transactionList = null;
+}
+
+<div class="form-group row">
+    <label for="account" class="col-sm-2 col-form-label">Select your account </label>
+    <div class="col-sm-10">
+        <div class="form-group">
+            <select class="form-control" id="accountNumber" name="accountNumber" onchange="selectAccount()">
+                <option value="" disabled selected>Select your option</option>
+                @foreach (MyStatementViewModel statement in myStatements)
+                {
+                    <option value=@statement>
+                        @Html.DisplayFor(x => @statement.Account.AccountNumber)  @Html.DisplayFor(x => @statement.Balance)
+                    </option>
+                }
+            </select>
+        </div>
+    </div>
+</div>
+
+<div>
+    <table class="table">
+        <tr>
+            <th>@Html.DisplayNameFor(x => transactionList[0].TransactionID)</th>
+            <th>@Html.DisplayNameFor(x => transactionList[0].TransactionType)</th>
+            <th>@Html.DisplayNameFor(x => transactionList[0].AccountNumber)</th>
+            <th>@Html.DisplayNameFor(x => transactionList[0].DestAccountNumber)</th>
+            <th>@Html.DisplayNameFor(x => transactionList[0].Amount)</th>
+            <th>@Html.DisplayNameFor(x => transactionList[0].Comment)</th>
+            <th>@Html.DisplayNameFor(x => transactionList[0].ModifyDate)</th>
+        </tr>
+        @foreach (var transaction in transactionList)
+        {
+            <tr>
+                <td>@Html.DisplayFor(x => transaction.TransactionID)</td>
+                <td>@Html.DisplayFor(x => transaction.TransactionType)</td>
+                <td>@Html.DisplayFor(x => transaction.AccountNumber)</td>
+                <td>@Html.DisplayFor(x => transaction.DestAccountNumber)</td>
+                <td>@Html.DisplayFor(x => transaction.Amount)</td>
+                <td>@Html.DisplayFor(x => transaction.Comment)</td>
+                <td>@Html.DisplayFor(x => transaction.ModifyDate)</td>
+            </tr>
+        }
+    </table>
+
+    @Html.PagedListPager(transactionList, page => Url.Action("MyStatement", new { page }),
+        new PagedListRenderOptions
+            {
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" }
+        })
+</div>
+<script>
+    function selectAccount() {
+        var myStatement = document.getElementById("accountNumber");
+        @selectedStatement = myStatement.value;
+        @transactionList = @selectedStatement.PagedList;
+    }
+</script>
+<div>
+    <a asp-action="Index">Back to Customers</a>
+</div>
+
+
+<h1>MyStatement</h1>
+
