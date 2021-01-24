@@ -52,7 +52,7 @@ namespace InternetBankingWebApp.Controllers
         public async Task<IActionResult> ATMAction(TransactionType transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
         {
             if (transactionType == TransactionType.Deposit)
-                return await Deposit(destAccountNumber, amount, comment);
+                return await Deposit(accountNumber, amount, comment);
             else if (transactionType == TransactionType.Withdrawal)
                 return await Withdraw(accountNumber, amount, comment);
             else
@@ -71,7 +71,7 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View();
+                return RedirectToAction(nameof(ATM));
             }
             else
             {
@@ -106,7 +106,7 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View();
+                return RedirectToAction(nameof(ATM));
             }
             else
             {
@@ -141,7 +141,7 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View();
+                return RedirectToAction(nameof(ATM));
             }
             else
             {
@@ -166,6 +166,12 @@ namespace InternetBankingWebApp.Controllers
 
             return View(statementList);
         }
+
+
+        //public async Task<IActionResult> BillPay()
+        //{
+
+        //}
 
 
         [Route("[action]")]
