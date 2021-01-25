@@ -163,8 +163,10 @@ namespace InternetBankingWebApp.Controllers
 
 
         [HttpPost, Route("[action]")]
-        public async Task<IActionResult> MyStatement(Account account, int? page = 1)
+        public async Task<IActionResult> MyStatement(string accountJson, int? page = 1)
         {
+            Account account = JsonConvert.DeserializeObject<Account>(accountJson);
+
             var myStatement = new MyStatementViewModel(account);
             await myStatement.CreatePagedList(page, 4);
 
