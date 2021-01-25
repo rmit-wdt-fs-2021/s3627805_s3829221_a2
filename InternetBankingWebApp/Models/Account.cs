@@ -180,9 +180,20 @@ namespace InternetBankingWebApp.Models
         }
 
 
-        public void BillPay()
+        public void ScheduleBillPay(Payee payee, decimal amount, DateTime scheduleDate, Period period)
         {
-
+            BillPays.Add(
+                new BillPay
+                {
+                    AccountNumber = AccountNumber,
+                    Account = this,
+                    PayeeID = payee.PayeeID,
+                    Payee = payee,
+                    Amount = amount,
+                    ScheduleDate = scheduleDate,
+                    Period = period,
+                    ModifyDate = DateTime.UtcNow
+                });
         }
     }
 }

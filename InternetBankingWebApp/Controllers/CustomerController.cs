@@ -11,6 +11,7 @@ using System.Linq;
 using System.Collections.Generic;
 using X.PagedList;
 using InternetBankingWebApp.ViewModels;
+using Newtonsoft.Json;
 
 namespace InternetBankingWebApp.Controllers
 {
@@ -153,29 +154,44 @@ namespace InternetBankingWebApp.Controllers
 
 
         [Route("[action]")]
-        public async Task<IActionResult> MyStatement(int? page = 1)
-        {
-            var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
-            var statementList = new List<MyStatementViewModel>();
-            
-            foreach (var account in accounts)
-            {
-                var myStatement = new MyStatementViewModel(account);
-                myStatement.CreatePagedList(page, 4);
-                statementList.Add(myStatement);
-            }
-
-            return View(statementList);
-        }
-
-
-        [Route("[action]")]
-        public async Task<IActionResult> BillPay()
+        public async Task<IActionResult> SelectStatementAccount()
         {
             var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
 
             return View(accounts);
         }
+
+
+        [HttpPost, Route("[action]")]
+        public async Task<IActionResult> MyStatement(Account account, int? page = 1)
+        {
+            var myStatement = new MyStatementViewModel(account);
+            await myStatement.CreatePagedList(page, 4);
+
+            return View(myStatement);
+        }
+
+
+        //[Route("[action]")]
+        //public async Task<IActionResult> SelectBillPayAccount()
+        //{
+        //    var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+
+        //    return View(accounts);
+        //}
+
+
+        //[HttpPost, Route("[action]")]
+        //public async Task<IActionResult> BillPay(Account account)
+        //{
+        //    var payees = await _context.Payees.ToListAsync();
+        //    ViewBag.payees = payees;
+
+        //    return View(account);
+        //}
+
+
+
 
 
         [Route("[action]")]
