@@ -2,31 +2,15 @@
 @using X.PagedList.Mvc.Core
 @using X.PagedList.Mvc.Core.Common
 @using InternetBankingWebApp.ViewModels;
-@model List<MyStatementViewModel>
+@model MyStatementViewModel
 
 @{
-    var myStatements = Model;
+    MyStatementViewModel myStatement = Model;
     ViewData["Title"] = "My Statement";
-    MyStatementViewModel selectedStatement = null;
-    PagedList<Transaction> transactionList = null;
+    var transactionList = Model.PagedList;
 }
 
-<div class="form-group row">
-    <label for="account" class="col-sm-2 col-form-label">Select your account </label>
-    <div class="col-sm-10">
-        <div class="form-group">
-            <select class="form-control" id="accountNumber" name="accountNumber" onchange="selectAccount()">
-                <option value="" disabled selected>Select your option</option>
-                @foreach (MyStatementViewModel statement in myStatements)
-                {
-                    <option value=@statement>
-                        @Html.DisplayFor(x => @statement.Account.AccountNumber)  @Html.DisplayFor(x => @statement.Balance)
-                    </option>
-                }
-            </select>
-        </div>
-    </div>
-</div>
+@await Html.PartialAsync("_AccountSelector", ViewData["Accounts"])
 
 <div>
     <table class="table">
@@ -60,13 +44,7 @@
             PageClasses = new[] { "page-link" }
         })
 </div>
-<script>
-    function selectAccount() {
-        var myStatement = document.getElementById("accountNumber");
-        @selectedStatement = myStatement.value;
-        @transactionList = @selectedStatement.PagedList;
-    }
-</script>
+
 <div>
     <a asp-action="Index">Back to Customers</a>
 </div>

@@ -162,12 +162,14 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost, Route("[action]")]
+        [Route("[action]")]
         public async Task<IActionResult> MyStatement(string accountJson, int? page = 1)
         {
             Account account = JsonConvert.DeserializeObject<Account>(accountJson);
-
             var myStatement = new MyStatementViewModel(account);
+
+            var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+            ViewData["Accounts"] = accounts;
             await myStatement.CreatePagedList(page, 4);
 
             return View(myStatement);

@@ -1,0 +1,42 @@
+﻿@using System.Collections.Generic
+@using Newtonsoft.Json
+
+@model List<Account>
+
+<h1>MyStatement</h1>
+<form asp-action="MyStatement" asp-controller="Customer">
+    <div class="form-group row">
+        <label for="account" class="col-sm-2 col-form-label">Select your account </label>
+        <div class="col-sm-10">
+            <div class="form-group">
+                <select class="form-control" id="accountJson" name="accountJson" onchange="this.form.submit()">
+                    <option value="" disabled selected>Select your option</option>
+                    @foreach (Account account in Model)
+                    {
+
+                        string accountJson = JsonConvert.SerializeObject(account, new JsonSerializerSettings()
+                        {
+                            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                            Formatting = Formatting.Indented
+                        });
+                        <option value=@accountJson>
+
+                            @{
+                                var accountString = "Account: " + account.AccountNumber + "  ";
+                                var balanceString = "Balance: " + account.GetBalance();
+                                @Html.DisplayFor(x => accountString) @Html.DisplayFor(x => balanceString)
+                            }
+                        </option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</form>
+<div>
+    <a asp-action="Index">Back to Customers</a>
+</div>
+
+
+
+
