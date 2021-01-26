@@ -162,15 +162,27 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [Route("[action]")]
-        public async Task<IActionResult> MyStatement(int accountNumber, int? page = 1)
+        [HttpPost]
+        public async Task<IActionResult> AccountToMyStatement(int accountNumber)
         {
             Account account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
+
+            HttpContext.Session.SetInt32("AccountNumber", accountNumber);
+
+            return RedirectToAction(nameof(MyStatement));
+        }
+
+
+        [Route("[action]")]
+        public async Task<IActionResult> MyStatement(int? page = 1)
+        {
+            var accountNumber = HttpContext.Session.GetInt32("AccountNumber");
+            var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
             var myStatement = new MyStatementViewModel(account);
+            await myStatement.CreatePagedList(page, 4);
 
             var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
             ViewData["Accounts"] = accounts;
-            await myStatement.CreatePagedList(page, 4);
 
             return View(myStatement);
         }
