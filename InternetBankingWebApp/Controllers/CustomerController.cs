@@ -163,6 +163,7 @@ namespace InternetBankingWebApp.Controllers
 
 
         [HttpPost]
+        [Route("[action]")]
         public async Task<IActionResult> AccountToMyStatement(int accountNumber)
         {
             Account account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
