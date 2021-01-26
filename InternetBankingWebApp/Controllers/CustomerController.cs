@@ -184,28 +184,29 @@ namespace InternetBankingWebApp.Controllers
 
             var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
             ViewData["Accounts"] = accounts;
+            
 
             return View(myStatement);
         }
 
 
-        //[Route("[action]")]
-        //public async Task<IActionResult> SelectBillPayAccount()
-        //{
-        //    var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+        [Route("[action]")]
+        public async Task<IActionResult> SelectBillPayAccount()
+        {
+            var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
 
-        //    return View(accounts);
-        //}
+            return View(accounts);
+        }
 
 
-        //[HttpPost, Route("[action]")]
-        //public async Task<IActionResult> BillPay(Account account)
-        //{
-        //    var payees = await _context.Payees.ToListAsync();
-        //    ViewBag.payees = payees;
+        [HttpPost, Route("[action]")]
+        public async Task<IActionResult> BillPay(Account account)
+        {
+            var payees = await _context.Payees.ToListAsync();
+            ViewBag.payees = payees;
 
-        //    return View(account);
-        //}
+            return View(account);
+        }
 
 
 
