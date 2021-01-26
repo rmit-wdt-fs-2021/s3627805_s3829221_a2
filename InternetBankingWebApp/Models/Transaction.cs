@@ -14,7 +14,7 @@ namespace InternetBankingWebApp.Models
     }
 
 
-    public record Transaction
+    public record Transaction : IComparable<Transaction>
     {   
         [Display(Name = "Transaction ID")]
         public int TransactionID { get; init; }
@@ -41,5 +41,12 @@ namespace InternetBankingWebApp.Models
         [Required, DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss tt}", ApplyFormatInEditMode = true)]
         [Display(Name = "Modify Date")]
         public DateTime ModifyDate { get; init; }
+
+
+        // Sort transactions by time in descending order
+        public int CompareTo(Transaction transaction)
+        {
+            return transaction.ModifyDate.CompareTo(ModifyDate);
+        }
     }
 }
