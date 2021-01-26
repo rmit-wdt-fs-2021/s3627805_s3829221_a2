@@ -163,9 +163,9 @@ namespace InternetBankingWebApp.Controllers
 
 
         [Route("[action]")]
-        public async Task<IActionResult> MyStatement(string accountJson, int? page = 1)
+        public async Task<IActionResult> MyStatement(int accountNumber, int? page = 1)
         {
-            Account account = JsonConvert.DeserializeObject<Account>(accountJson);
+            Account account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
             var myStatement = new MyStatementViewModel(account);
 
             var accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
