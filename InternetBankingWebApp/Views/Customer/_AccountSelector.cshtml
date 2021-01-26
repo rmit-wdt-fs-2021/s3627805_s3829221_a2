@@ -1,6 +1,4 @@
 ﻿@using System.Collections.Generic
-@using Newtonsoft.Json
-
 @model List<Account>
 
 <h1>MyStatement</h1>
@@ -13,13 +11,7 @@
                     <option value="" disabled selected>Select your option</option>
                     @foreach (Account account in Model)
                     {
-
-                        string accountJson = JsonConvert.SerializeObject(account, new JsonSerializerSettings()
-                        {
-                            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-                            Formatting = Formatting.Indented
-                        });
-                        <option value=@accountJson>
+                        <option value=@account.AccountNumber>
 
                             @{
                                 var accountString = "Account: " + account.AccountNumber + "  ";
