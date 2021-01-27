@@ -237,6 +237,20 @@ namespace InternetBankingWebApp.Controllers
 
 
         [Route("[action]")]
+        public async Task<IActionResult> EditBillPay()
+        {
+
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> EditBillPay()
+        {
+
+        }
+
+
+        [Route("[action]")]
         public IActionResult Privacy() => View();
     }
 }
