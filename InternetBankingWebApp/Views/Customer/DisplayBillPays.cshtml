@@ -16,9 +16,14 @@
         @foreach (BillPay billPay in billPays)
         {
             <tr>
-                <td><div class="btn-primary"> Modify </div></td>
-
-
+                <td>
+                    <form asp-action="EditBillPay">
+                        <input hidden value="@billPay.BillPayID">
+                        <div class="form-group">
+                            <input type="submit" value="Modify" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </td>
                 <td>@Html.DisplayFor(x => billPay.Payee.PayeeName)</td>
                 <td>@Html.DisplayFor(x => billPay.Amount)</td>
                 <td>@Html.DisplayFor(x => billPays[0].ScheduleDate)</td>
