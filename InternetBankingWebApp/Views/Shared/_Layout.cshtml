@@ -10,7 +10,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">InternetBankingWebApp</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -18,53 +18,69 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 ml-auto">
 
                         @*Check if a user has logged in.*@
                         @*for changing the login/logout button, and showing the customer name.*@
                         @{
                             var isLoggedIn = Context.Session.GetInt32(nameof(Customer.CustomerID)).HasValue;
                         }
+
+
                         @if (isLoggedIn)
                         {
-                            <li class="nav-item">
-                                <span class="nav-link text-dark">
+                            @*Welcome message*@
+                            <li class="nav-item mr-auto">
+                                <span class="nav-link text-light">
                                     Welcome, @Context.Session.GetString(nameof(Customer.CustomerName))
                                 </span>
                             </li>
+                        }
+
+                        <li class="nav-item ml-auto">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+
+                        @if (isLoggedIn)
+                        {
+
+
+                            @*ATM*@
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Logout">Logout</a>
+                                <a class="nav-link text-light" asp-controller="Customer" asp-action="ATM">ATM</a>
+                            </li>
+
+                            @*MyStatement*@
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-controller="Customer" asp-action="SelectStatementAccount">My Statement</a>
+                            </li>
+
+                            @*BillPay*@
+                            <li class="nav-item">
+                                <a class="nav-link text-light" asp-controller="Customer" asp-action="SelectBillPayAccount">Bill Pay</a>
+                            </li>
+
+                            @*logout button*@
+                            <li class="btn btn-sm btn-outline-danger">
+                                <a class="nav-link text-light" asp-controller="Login" asp-action="Logout">Logout</a>
                             </li>
                         }
                         else
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Login">Login</a>
-                            </li>
-                        }
-                        @*if customer has logged in, add items to nav bar*@
-                        @if (isLoggedIn)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Customer" asp-action="ATM">ATM</a>
-                            </li>
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Customer" asp-action="SelectStatementAccount">My Statement</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Customer" asp-action="SelectBillPayAccount">Bill Pay</a>
+                            <li class="btn btn-sm btn-outline-success">
+                                <a class="nav-link text-light" asp-controller="Login" asp-action="Login">Login</a>
                             </li>
                         }
 
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+
+
+
+
                     </ul>
                 </div>
             </div>

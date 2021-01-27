@@ -1,7 +1,10 @@
 ﻿@model InternetBankingWebApp.ViewModels.BillPayViewModel
+
+
 @{
     ViewData["Title"] = "BillPay";
 }
+
 
 <form asp-controller="Customer" asp-action="ScheduleBillPay">
     @*Transaction Type*@
@@ -13,10 +16,11 @@
 
     @*Payee id*@
     <div class="form-group row">
-        <label for="toPayee" class="col-sm-2 col-form-label"> Account </label>
+        <label for="toPayee" class="col-sm-2 col-form-label"> To Payee </label>
         <div class="col-sm-10">
             <div class="form-group">
                 <select class="form-control" id="payeeID" name="payeeID">
+
                     <option value="" disabled selected>Select your option</option>
                     @{
                         foreach (Payee payee in Payees)
@@ -41,23 +45,60 @@
     </div>
 
     @*DateTime picker*@
-    
+
     <div class="form-group row">
-        <label for="amount" class="col-sm-2 col-form-label">Schedule date</label>
+        <label for="date" class="col-sm-2 col-form-label">Schedule date</label>
         <div class="col-sm-10">
             <div class="form-group">
-                <input type="text" value="2012-05-15 21:05" id="datetimepicker" data-date-format="yyyy-mm-dd hh:ii">
-                <script>$('#datetimepicker').datetimepicker();</script>
+                <div class="form-group">
+                    <label class="control-label"></label>
+                    <input id="date" name="scheduleDate" type="text" class="form-control" value="@DateTime.Now.ToString("dd/MM/yyyy")" />
+                    <span class="text-danger"></span>
+                </div>
+                @section Scripts{
+                    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+                    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+                    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+                    <script>
+                        $(function () {
+                            $("#date").datepicker();
+                        });
+                    </script>
+                }
             </div>
         </div>
     </div>
 
     @*Period*@
     <div class="form-group row">
-        <label for="toPayee" class="col-sm-2 col-form-label"> Period </label>
+        <label for="time" class="col-sm-2 col-form-label"> Schedule time </label>
         <div class="col-sm-10">
             <div class="form-group">
-                <select class="form-control" id="toPayee" name="toPayee">
+                <select class="form-control" id="time" name="scheduleTime">
+                    <option value="" disabled selected>Select your option</option>
+                    @{
+                        var standardTime = DateTime.ParseExact("00:00:00 AM", "hh:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture);
+
+                        for (double x = 0; x < 24; x++)
+                        {
+                            DateTime time = standardTime.AddHours(x);
+
+                            <option value=@time.ToString().Substring(10)>@time.ToString().Substring(10)</option> 
+                        }
+                    }
+
+                </select>
+            </div>
+        </div>
+    </div>
+
+    @*Period*@
+    <div class="form-group row">
+        <label for="period" class="col-sm-2 col-form-label"> Period </label>
+        <div class="col-sm-10">
+            <div class="form-group">
+                <select class="form-control" id="period" name="period">
                     <option value="" disabled selected>Select your option</option>
                     <option value=@Period.Monthly>Monthly</option>
                     <option value=@Period.Quarterly>Quarterly</option>

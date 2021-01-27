@@ -15,35 +15,39 @@
             <th>@Html.DisplayNameFor(x => billPays[0].ScheduleDate)</th>
             <th>@Html.DisplayNameFor(x => billPays[0].Period)</th>
         </tr>
-        @if (billPays.Count == 0)
-        {
-            @Html.Display("No bill pay found.");
+        @{
+            if (billPays.Count == 0)
+            {
+                <h2>No bill pay found.</h2>
+            }
+            else
+            {
+                foreach (BillPay billPay in billPays)
+                {
+
+                    <tr>
+                        <td>
+                            <form asp-action="EditBillPay">
+                                <input hidden value="@billPay.BillPayID">
+                                <div class="form-group">
+                                    <input type="submit" value="Modify" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </td>
+                        <td>@Html.DisplayFor(x => billPay.Payee.PayeeName)</td>
+                        <td>@Html.DisplayFor(x => billPay.Amount)</td>
+                        <td>@Html.DisplayFor(x => billPays[0].ScheduleDate)</td>
+                        <td>@Html.DisplayFor(x => billPays[0].Period)</td>
+                    </tr>
+                }
+            }
         }
-        @foreach (BillPay billPay in billPays)
-        {
-
-            <tr>
-                <td>
-                    <form asp-action="EditBillPay">
-                        <input hidden value="@billPay.BillPayID">
-                        <div class="form-group">
-                            <input type="submit" value="Modify" class="btn btn-primary" />
-                        </div>
-                    </form>
-                </td>
-                <td>@Html.DisplayFor(x => billPay.Payee.PayeeName)</td>
-                <td>@Html.DisplayFor(x => billPay.Amount)</td>
-                <td>@Html.DisplayFor(x => billPays[0].ScheduleDate)</td>
-                <td>@Html.DisplayFor(x => billPays[0].Period)</td>
-            </tr>
-        }
-        <form asp-action="BillPay">
-            <div class="form-group">
-                <input type="submit" value="" class="btn btn-primary" />
-            </div>
-        </form>
-
-
     </table>
+
+    <form asp-action="BillPay">
+        <div class="form-group">
+            <input type="submit" value="Add bill pay" class="btn btn-primary" />
+        </div>
+    </form>
 </div>
 
