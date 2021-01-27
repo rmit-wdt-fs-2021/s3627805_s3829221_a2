@@ -65,6 +65,8 @@ namespace InternetBankingWebApp.BackgroundServices
                             billPay.Account.BillPays.Remove(billPay);
                         // Advance the schedule by the period for monthly and quarterly BillPays
 
+                        await context.SaveChangesAsync(cancellationToken);
+
                         _logger.LogInformation("The bill payment from {0} to {1} is complete.",
                             billPay.AccountNumber, billPay.Payee.PayeeName);
                     }

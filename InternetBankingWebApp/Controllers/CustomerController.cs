@@ -215,6 +215,7 @@ namespace InternetBankingWebApp.Controllers
         public async Task<IActionResult> ScheduleBillPay(Account account, Payee payee, decimal amount, DateTime scheduleDate, Period period)
         {
             account.ScheduleBillPay(payee, amount, scheduleDate, period);
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(DisplayBillPays));
         }
@@ -223,7 +224,9 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("BillPayList")]
         public async Task<IActionResult> DisplayBillPays(Account account)
         {
-            return View(account.BillPays);
+            var billPays = await account.BillPays.ToListAsync();
+
+            return View(billPays);
         }
 
 
