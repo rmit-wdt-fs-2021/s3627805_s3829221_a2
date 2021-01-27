@@ -4,17 +4,24 @@
     List<BillPay> billPays = Model;
 }
 
+<h1>My Bill Pays</h1>
+
 <div>
     <table class="table">
         <tr>
-            <th>@Html.DisplayNameFor(x => " ")</th>
-            <th>@Html.DisplayNameFor(x => "Payee")</th>
+            <th> </th>
+            <th>Payee</th>
             <th>@Html.DisplayNameFor(x => billPays[0].Amount)</th>
             <th>@Html.DisplayNameFor(x => billPays[0].ScheduleDate)</th>
             <th>@Html.DisplayNameFor(x => billPays[0].Period)</th>
         </tr>
+        @if (billPays.Count == 0)
+        {
+            @Html.Display("No bill pay found.");
+        }
         @foreach (BillPay billPay in billPays)
         {
+
             <tr>
                 <td>
                     <form asp-action="EditBillPay">
@@ -30,8 +37,13 @@
                 <td>@Html.DisplayFor(x => billPays[0].Period)</td>
             </tr>
         }
+        <form asp-action="BillPay">
+            <div class="form-group">
+                <input type="submit" value="" class="btn btn-primary" />
+            </div>
+        </form>
+
+
     </table>
 </div>
-
-<h1>DisplayBillPays</h1>
 
