@@ -21,7 +21,8 @@
                     @{
                         foreach (Payee payee in Payees)
                         {
-                            <option value=@payee.PayeeID> @Html.DisplayFor(x => payee.PayeeID + " " + payee.PayeeName) </option>
+                            var payeeInfo = payee.PayeeID + " " + payee.PayeeName;
+                            <option value=@payee.PayeeID> @Html.DisplayFor(x => payeeInfo) </option>
                         }
                     }
                 </select>
@@ -40,26 +41,27 @@
     </div>
 
     @*DateTime picker*@
-    <div class="control-group">
-        <label class="control-label">Schedule date</label>
-        <div class="controls input-append date form_datetime" data-date="2021-01-01T00:00:00Z" data-date-format="dd MM yyyy - HH:mm:ss tt" data-link-field="date">
-            <input size="16" type="text" value="" readonly>
-            <span class="add-on"><i class="icon-remove"></i></span>
-            <span class="add-on"><i class="icon-th"></i></span>
+    
+    <div class="form-group row">
+        <label for="amount" class="col-sm-2 col-form-label">Schedule date</label>
+        <div class="col-sm-10">
+            <div class="form-group">
+                <input type="text" value="2012-05-15 21:05" id="datetimepicker" data-date-format="yyyy-mm-dd hh:ii">
+                <script>$('#datetimepicker').datetimepicker();</script>
+            </div>
         </div>
-        <input type="hidden" id="scheduleDate" name="scheduleDate" value="" /><br />
     </div>
 
     @*Period*@
     <div class="form-group row">
-        <label for="toPayee" class="col-sm-2 col-form-label"> Account </label>
+        <label for="toPayee" class="col-sm-2 col-form-label"> Period </label>
         <div class="col-sm-10">
             <div class="form-group">
                 <select class="form-control" id="toPayee" name="toPayee">
                     <option value="" disabled selected>Select your option</option>
-                    <option value=@Period.Monthly>@Html.DisplayFor(x => "Monthly")</option>
-                    <option value=@Period.Quarterly>@Html.DisplayFor(x => "Quarterly")</option>
-                    <option value=@Period.OnceOff>@Html.DisplayFor(x => "OnceOff")</option>
+                    <option value=@Period.Monthly>Monthly</option>
+                    <option value=@Period.Quarterly>Quarterly</option>
+                    <option value=@Period.OnceOff>OnceOff</option>
                 </select>
             </div>
         </div>
