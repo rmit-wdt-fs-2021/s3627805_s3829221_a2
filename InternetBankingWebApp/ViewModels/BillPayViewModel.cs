@@ -7,7 +7,7 @@ namespace InternetBankingWebApp.ViewModels
 {
     public class BillPayViewModel
     {
-        public List<Account> Accounts { get; set; }
+        public Account Account { get; set; }
         public List<Payee> Payees { get; set; }
     }
 }
