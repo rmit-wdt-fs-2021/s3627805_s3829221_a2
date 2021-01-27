@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using InternetBankingWebApp.Data;
+using InternetBankingWebApp.BackgroundServices;
 using System;
 
 namespace InternetBankingWebApp
@@ -28,11 +29,14 @@ namespace InternetBankingWebApp
                 options.UseLazyLoadingProxies();
             });
 
+            // Enable BillPay background service
+            services.AddHostedService<BillPayBackgroundService>();
+
             // Store session into the memory of the web server
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
-                // Make the session cookie essential
+                
                 options.Cookie.IsEssential = true;
 
                 // Add expiry time for session

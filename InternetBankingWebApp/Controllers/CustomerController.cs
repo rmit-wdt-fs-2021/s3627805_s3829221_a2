@@ -162,8 +162,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost]
-        [Route("[action]")]
+        [HttpPost, Route("[action]")]
         public async Task<IActionResult> AccountToMyStatement(int accountNumber)
         {
             Account account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
@@ -202,14 +201,39 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("[action]")]
         public async Task<IActionResult> BillPay(Account account)
         {
-            var payees = await _context.Payees.ToListAsync();
-            ViewBag.payees = payees;
+            var billPayViewModel = new BillPayViewModel
+            {
+                Account = account,
+                Payees = await _context.Payees.ToListAsync()
+            };
 
-            return View(account);
+            HttpContext.Session.SetInt32("AccountID", account.AccountNumber);
+
+            return View(billPayViewModel);
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> ScheduleBillPay(Payee payee, decimal amount, DateTime scheduleDate, Period period)
+        {
+            var accountID = HttpContext.Session.GetInt32("AccountID");
+            var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountID);
 
+            account.ScheduleBillPay(payee, amount, scheduleDate, period);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(DisplayBillPays));
+        }
+
+
+        [HttpPost, Route("BillPayList")]
+        public async Task<IActionResult> DisplayBillPays()
+        {
+            var accountID = HttpContext.Session.GetInt32("AccountID");
+            var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountID);
+
+            return View(account.BillPays);
+        }
 
 
         [Route("[action]")]
