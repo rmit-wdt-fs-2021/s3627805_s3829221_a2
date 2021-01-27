@@ -195,5 +195,32 @@ namespace InternetBankingWebApp.Models
                     ModifyDate = DateTime.UtcNow
                 });
         }
+
+
+        public void PayBill(decimal amount, Payee payee)
+        {
+            // If minimum balance is breached
+            if (AccountType == AccountType.Saving && GetBalance() - amount < 0)
+            {
+                throw new MinBalanceBreachException();
+            }
+            else if (AccountType == AccountType.Checking && GetBalance() - amount < 200)
+            {
+                throw new MinBalanceBreachException();
+            }
+            else
+            {
+                Transactions.Add(
+                    new Transaction
+                    {
+                        TransactionType = TransactionType.BillPay,
+                        AccountNumber = AccountNumber,
+                        Account = this,
+                        Amount = amount,
+                        Comment = "Bill payment to " + payee.PayeeName,
+                        ModifyDate = DateTime.UtcNow
+                    }); 
+            }
+        }
     }
 }
