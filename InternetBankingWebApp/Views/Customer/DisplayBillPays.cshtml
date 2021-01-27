@@ -1,0 +1,32 @@
+﻿@model List<BillPay>
+@{
+    ViewData["Title"] = "DisplayBillPays";
+    List<BillPay> billPays = Model;
+}
+
+<div>
+    <table class="table">
+        <tr>
+            <th>@Html.DisplayNameFor(x => " ")</th>
+            <th>@Html.DisplayNameFor(x => "Payee")</th>
+            <th>@Html.DisplayNameFor(x => billPays[0].Amount)</th>
+            <th>@Html.DisplayNameFor(x => billPays[0].ScheduleDate)</th>
+            <th>@Html.DisplayNameFor(x => billPays[0].Period)</th>
+        </tr>
+        @foreach (BillPay billPay in billPays)
+        {
+            <tr>
+                <td><div class="btn-primary"> Modify </div></td>
+
+
+                <td>@Html.DisplayFor(x => billPay.Payee.PayeeName)</td>
+                <td>@Html.DisplayFor(x => billPay.Amount)</td>
+                <td>@Html.DisplayFor(x => billPays[0].ScheduleDate)</td>
+                <td>@Html.DisplayFor(x => billPays[0].Period)</td>
+            </tr>
+        }
+    </table>
+</div>
+
+<h1>DisplayBillPays</h1>
+
