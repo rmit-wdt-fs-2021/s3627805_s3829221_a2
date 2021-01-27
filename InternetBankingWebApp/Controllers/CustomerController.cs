@@ -199,25 +199,27 @@ namespace InternetBankingWebApp.Controllers
 
 
         [HttpPost, Route("[action]")]
-        public async Task<IActionResult> BillPay(Account account)
+        public async Task<IActionResult> BillPay(int accountNumber)
         {
             var billPayViewModel = new BillPayViewModel
             {
-                Account = account,
+                Account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber),
                 Payees = await _context.Payees.ToListAsync()
             };
 
-            HttpContext.Session.SetInt32("AccountID", account.AccountNumber);
+            HttpContext.Session.SetInt32("AccountID", accountNumber);
 
             return View(billPayViewModel);
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> ScheduleBillPay(Payee payee, decimal amount, DateTime scheduleDate, Period period)
+        public async Task<IActionResult> ScheduleBillPay(int payeeID, decimal amount, DateTime scheduleDate, Period period)
         {
             var accountID = HttpContext.Session.GetInt32("AccountID");
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountID);
+
+            var payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
 
             account.ScheduleBillPay(payee, amount, scheduleDate, period);
             await _context.SaveChangesAsync();
@@ -226,7 +228,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost, Route("BillPayList")]
+        [Route("BillPayList")]
         public async Task<IActionResult> DisplayBillPays()
         {
             var accountID = HttpContext.Session.GetInt32("AccountID");
@@ -236,18 +238,18 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [Route("[action]")]
-        public async Task<IActionResult> EditBillPay()
-        {
+        //[Route("[action]")]
+        //public async Task<IActionResult> EditBillPay()
+        //{
 
-        }
+        //}
 
 
-        [HttpPost]
-        public async Task<IActionResult> EditBillPay()
-        {
+        //[HttpPost]
+        //public async Task<IActionResult> EditBillPay()
+        //{
 
-        }
+        //}
 
 
         [Route("[action]")]
