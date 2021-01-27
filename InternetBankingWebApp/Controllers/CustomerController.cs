@@ -222,6 +222,7 @@ namespace InternetBankingWebApp.Controllers
             var payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
 
             account.ScheduleBillPay(payee, amount, scheduleDate, period);
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(DisplayBillPays));
@@ -238,18 +239,33 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        //[Route("[action]")]
-        //public async Task<IActionResult> EditBillPay()
-        //{
+        [Route("[action]")]
+        public async Task<IActionResult> EditBillPay(int billPayID)
+        {
+            var billPay = await _context.BillPays.SingleAsync(x => x.BillPayID == billPayID);
 
-        //}
+            return View(billPay);
+        }
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> EditBillPay()
-        //{
+        [HttpPost]
+        public async Task<IActionResult> EditBillPay(int billPayID, int accountNumber, int payeeID, decimal amount, DateTime schedule, Period period)
+        {
+            var billPay = await _context.BillPays.SingleAsync(x => x.BillPayID == billPayID);
 
-        //}
+            billPay.AccountNumber = accountNumber;
+            billPay.Account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
+            billPay.PayeeID = payeeID;
+            billPay.Payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
+            billPay.Amount = amount;
+            billPay.ScheduleDate = schedule;
+            billPay.Period = period;
+            billPay.ModifyDate = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(DisplayBillPays));
+        }
 
 
         [Route("[action]")]
