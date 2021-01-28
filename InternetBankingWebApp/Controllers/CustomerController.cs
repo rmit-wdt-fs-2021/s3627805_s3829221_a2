@@ -219,19 +219,23 @@ namespace InternetBankingWebApp.Controllers
                 Payees = await _context.Payees.ToListAsync()
             };
 
-            return View(billPayViewModel);
+            ViewData["BillPayViewModel"] = billPayViewModel;
+
+            return View();
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> ScheduleBillPay(int payeeID, decimal amount, DateTime scheduleDate, Period period)
+        public async Task<IActionResult> ScheduleBillPay(int payeeID, decimal amount, string scheduleString, Period period)
         {
             var accountID = HttpContext.Session.GetInt32("AccountID");
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountID);
 
             var payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
 
-            account.ScheduleBillPay(payee, amount, scheduleDate, period);
+            var schedule = DateTime.ParseExact(scheduleString, "dd/MM/yyyy hh:mm:ss tt", null).ToUniversalTime();
+
+            account.ScheduleBillPay(payee, amount, schedule, period);
 
             await _context.SaveChangesAsync();
 
