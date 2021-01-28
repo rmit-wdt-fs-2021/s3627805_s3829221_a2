@@ -198,10 +198,20 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost, Route("BillPayList")]
-        public async Task<IActionResult> DisplayBillPays(int accountID)
+        [HttpPost]
+        public async Task GetBillPayAccount(int accountID)
         {
             HttpContext.Session.SetInt32("AccountID", accountID);
+
+            await DisplayBillPays();
+        }
+
+
+
+        [Route("BillPayList")]
+        public async Task<IActionResult> DisplayBillPays()
+        {
+            var accountID = HttpContext.Session.GetInt32("AccountID");
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountID);
 
             return View(account.BillPays);
