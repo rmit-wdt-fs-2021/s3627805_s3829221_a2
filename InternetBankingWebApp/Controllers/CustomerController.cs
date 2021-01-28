@@ -225,7 +225,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost, Route("[action]")]
         public async Task<IActionResult> ScheduleBillPay(int payeeID, decimal amount, string scheduleString, Period period)
         {
             var accountID = HttpContext.Session.GetInt32("AccountID");
@@ -233,7 +233,7 @@ namespace InternetBankingWebApp.Controllers
 
             var payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
 
-            var schedule = DateTime.ParseExact(scheduleString, "MM/dd/yyyy hh:mm:ss tt", null).ToUniversalTime();
+            var schedule = DateTime.ParseExact(scheduleString, "MM/dd/yyyy h:mm tt", null).ToUniversalTime();
 
             account.ScheduleBillPay(payee, amount, schedule, period);
 
