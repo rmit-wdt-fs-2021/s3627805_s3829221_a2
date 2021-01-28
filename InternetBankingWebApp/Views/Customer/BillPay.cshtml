@@ -1,16 +1,18 @@
-﻿@model InternetBankingWebApp.ViewModels.BillPayViewModel
-
-
+﻿@using InternetBankingWebApp.ViewModels;
+@using System.Threading;
+@using System.Globalization;
+@model BillPay 
 @{
     ViewData["Title"] = "BillPay";
+    BillPayViewModel billPayViewModel = (BillPayViewModel)ViewData["BillPayViewModel"];
 }
 
 
-<form asp-controller="Customer" asp-action="ScheduleBillPay">
+<form asp-controller="Customer" asp-action="ScheduleBillPay" method="post">
     @*Transaction Type*@
     @{
-        Account account = Model.Account;
-        List<Payee> Payees = Model.Payees;
+        Account account = billPayViewModel.Account;
+        List<Payee> Payees = billPayViewModel.Payees;
     }
     <h1>BillPay</h1>
 
@@ -19,7 +21,7 @@
         <label for="toPayee" class="col-sm-2 col-form-label"> To Payee </label>
         <div class="col-sm-10">
             <div class="form-group">
-                <select class="form-control" id="payeeID" name="payeeID">
+                <select asp-for="@Model.PayeeID" class="form-control" id="payeeID" name="payeeID">
 
                     <option value="" disabled selected>Select your option</option>
                     @{
@@ -39,7 +41,7 @@
         <label for="amount" class="col-sm-2 col-form-label">Amount</label>
         <div class="col-sm-10">
             <div class="form-group">
-                <input type="number" class="form-control" id="amount" name="amount">
+                <input asp-for="@Model.Amount"type="number" class="form-control" id="amount" name="amount">
             </div>
         </div>
     </div>
@@ -52,17 +54,22 @@
             <div class="form-group">
                 <div class="form-group">
                     <label class="control-label"></label>
-                    <input id="date" name="scheduleDate" type="text" class="form-control" value="@DateTime.Now.ToString("dd/MM/yyyy")" />
+                    <input asp-for="@Model.ScheduleDate" id="date" name="scheduleString" type="text" class="form-control" value=""/>
                     <span class="text-danger"></span>
                 </div>
-                @section Scripts{
-                    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-                    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-                    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+                @section Scripts
+                {
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
                     <script>
                         $(function () {
-                            $("#date").datepicker();
+                            $('#date').datetimepicker();
                         });
                     </script>
                 }
@@ -72,33 +79,10 @@
 
     @*Period*@
     <div class="form-group row">
-        <label for="time" class="col-sm-2 col-form-label"> Schedule time </label>
-        <div class="col-sm-10">
-            <div class="form-group">
-                <select class="form-control" id="time" name="scheduleTime">
-                    <option value="" disabled selected>Select your option</option>
-                    @{
-                        var standardTime = DateTime.ParseExact("00:00:00 AM", "hh:mm:ss tt", System.Globalization.CultureInfo.InvariantCulture);
-
-                        for (double x = 0; x < 24; x++)
-                        {
-                            DateTime time = standardTime.AddHours(x);
-
-                            <option value=@time.ToString().Substring(10)>@time.ToString().Substring(10)</option> 
-                        }
-                    }
-
-                </select>
-            </div>
-        </div>
-    </div>
-
-    @*Period*@
-    <div class="form-group row">
         <label for="period" class="col-sm-2 col-form-label"> Period </label>
         <div class="col-sm-10">
             <div class="form-group">
-                <select class="form-control" id="period" name="period">
+                <select asp-for="@Model.Period" class="form-control" id="period" name="period">
                     <option value="" disabled selected>Select your option</option>
                     <option value=@Period.Monthly>Monthly</option>
                     <option value=@Period.Quarterly>Quarterly</option>
@@ -113,6 +97,3 @@
     </div>
 </form>
 
-<div>
-    <a asp-action="Index">Back to Dashboard</a>
-</div>
