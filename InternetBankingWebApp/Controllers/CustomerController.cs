@@ -233,7 +233,7 @@ namespace InternetBankingWebApp.Controllers
 
             var payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
 
-            var schedule = DateTime.ParseExact(scheduleString, "dd/MM/yyyy hh:mm:ss tt", null).ToUniversalTime();
+            var schedule = DateTime.ParseExact(scheduleString, "MM/dd/yyyy hh:mm:ss tt", null).ToUniversalTime();
 
             account.ScheduleBillPay(payee, amount, schedule, period);
 
