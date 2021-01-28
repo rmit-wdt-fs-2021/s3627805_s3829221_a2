@@ -49,7 +49,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost, Route("[action]")]
         public async Task<IActionResult> ATMAction(TransactionType transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
         {
             if (transactionType == TransactionType.Deposit)
@@ -198,12 +198,12 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost]
-        public async Task GetBillPayAccount(int accountID)
+        [HttpPost,Route("[action]")]
+        public async Task<IActionResult> GetBillPayAccount(int accountID)
         {
             HttpContext.Session.SetInt32("AccountID", accountID);
 
-            await DisplayBillPays();
+            return RedirectToAction(nameof(DisplayBillPays));
         }
 
 
