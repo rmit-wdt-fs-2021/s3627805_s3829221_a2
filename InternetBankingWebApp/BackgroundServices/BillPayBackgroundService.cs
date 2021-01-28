@@ -54,7 +54,7 @@ namespace InternetBankingWebApp.BackgroundServices
             var billPays = await context.BillPays.ToListAsync(cancellationToken);
             foreach (var billPay in billPays)
             {
-                if (billPay.ScheduleDate.CompareTo(DateTime.UtcNow) >= 0)
+                if (billPay.ScheduleDate.CompareTo(DateTime.UtcNow) <= 0)
                 {
                     try
                     {

@@ -198,7 +198,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost,Route("[action]")]
+        [HttpPost, Route("[action]")]
         public async Task<IActionResult> GetBillPayAccount(int accountID)
         {
             HttpContext.Session.SetInt32("AccountID", accountID);
@@ -238,18 +238,30 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("[action]")]
         public async Task<IActionResult> ScheduleBillPay(int payeeID, decimal amount, string scheduleString, Period period)
         {
-            var accountID = HttpContext.Session.GetInt32("AccountID");
-            var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountID);
+            if (amount <= 0)
+                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
+            else if (amount.HasMoreThanTwoDecimalPlaces())
+                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
 
-            var payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(BillPay));
+            }
+            else
+            {
+                var accountID = HttpContext.Session.GetInt32("AccountID");
+                var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountID);
 
-            var schedule = DateTime.ParseExact(scheduleString, "MM/dd/yyyy h:mm tt", null).ToUniversalTime();
+                var payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
 
-            account.ScheduleBillPay(payee, amount, schedule, period);
+                var schedule = DateTime.ParseExact(scheduleString, "MM/dd/yyyy h:mm tt", null).ToUniversalTime();
 
-            await _context.SaveChangesAsync();
+                account.ScheduleBillPay(payee, amount, schedule, period);
 
-            return RedirectToAction(nameof(DisplayBillPays));
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(DisplayBillPays));
+            }
         }
 
 
