@@ -52,11 +52,6 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("[action]")]
         public async Task<IActionResult> ATMAction(TransactionType? transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
         {
-            //if (transactionType == null)
-            //    ModelState.AddModelError(nameof(transactionType), "Transaction type is required.");
-            //if (accountNumber == 0)
-            //    ModelState.AddModelError(nameof(accountNumber), "Account number is required.");
-
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(ATM));
