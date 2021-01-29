@@ -250,18 +250,6 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("[action]")]
         public async Task<IActionResult> ScheduleBillPay(int payeeID, decimal amount, string scheduleString, Period period)
         {
-            //if (payeeID == 0)
-            //    ModelState.AddModelError(nameof(payeeID), "Payee ID is required.");
-
-            //if (amount <= 0)
-            //    ModelState.AddModelError(nameof(amount), "Amount must be positive.");
-            //else if (amount.HasMoreThanTwoDecimalPlaces())
-            //    ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
-
-            //if (period == 0)
-            //    ModelState.AddModelError(nameof(period), "Period is required.");
-
-
             if (!ModelState.IsValid)
             {
                 return RedirectToAction(nameof(BillPay));
