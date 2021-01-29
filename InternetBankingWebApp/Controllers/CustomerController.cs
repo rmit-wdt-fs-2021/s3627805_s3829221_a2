@@ -198,8 +198,8 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost,Route("[action]")]
-        public async Task<IActionResult> GetBillPayAccount(int accountID)
+        [HttpPost, Route("[action]")]
+        public IActionResult GetBillPayAccount(int accountID)
         {
             HttpContext.Session.SetInt32("AccountID", accountID);
 
@@ -238,18 +238,30 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("[action]")]
         public async Task<IActionResult> ScheduleBillPay(int payeeID, decimal amount, string scheduleString, Period period)
         {
-            var accountID = HttpContext.Session.GetInt32("AccountID");
-            var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountID);
+            if (amount <= 0)
+                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
+            else if (amount.HasMoreThanTwoDecimalPlaces())
+                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
 
-            var payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(BillPay));
+            }
+            else
+            {
+                var accountID = HttpContext.Session.GetInt32("AccountID");
+                var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountID);
 
-            var schedule = DateTime.ParseExact(scheduleString, "MM/dd/yyyy h:mm tt", null).ToUniversalTime();
+                var payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
 
-            account.ScheduleBillPay(payee, amount, schedule, period);
+                var schedule = DateTime.ParseExact(scheduleString, "MM/dd/yyyy h:mm tt", null).ToUniversalTime();
 
-            await _context.SaveChangesAsync();
+                account.ScheduleBillPay(payee, amount, schedule, period);
 
-            return RedirectToAction(nameof(DisplayBillPays));
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(DisplayBillPays));
+            }
         }
 
 
@@ -262,23 +274,32 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> EditBillPay(int billPayID, int accountNumber, int payeeID, decimal amount, DateTime schedule, Period period)
+        [HttpPost, Route("[action]"), ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditBillPay([Bind("AccountNumber, PayeeID, Amount, ScheduleDate, Period, ModifyDate")] BillPay billPay)
         {
-            var billPay = await _context.BillPays.SingleAsync(x => x.BillPayID == billPayID);
+            if (billPay.Amount <= 0)
+                ModelState.AddModelError(nameof(billPay.Amount), "Amount must be positive.");
+            else if (billPay.Amount.HasMoreThanTwoDecimalPlaces())
+                ModelState.AddModelError(nameof(billPay.Amount), "Amount cannot have more than 2 decimal places.");
 
-            billPay.AccountNumber = accountNumber;
-            billPay.Account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
-            billPay.PayeeID = payeeID;
-            billPay.Payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
-            billPay.Amount = amount;
-            billPay.ScheduleDate = schedule;
-            billPay.Period = period;
-            billPay.ModifyDate = DateTime.UtcNow;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(billPay);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
 
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(DisplayBillPays));
+                return RedirectToAction(nameof(DisplayBillPays));
+            }
+            else
+            {
+                return View(billPay);
+            }
         }
 
 
