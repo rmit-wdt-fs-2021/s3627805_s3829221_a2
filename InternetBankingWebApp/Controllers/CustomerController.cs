@@ -50,14 +50,26 @@ namespace InternetBankingWebApp.Controllers
 
 
         [HttpPost, Route("[action]")]
-        public async Task<IActionResult> ATMAction(TransactionType transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
+        public async Task<IActionResult> ATMAction(TransactionType? transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
         {
-            if (transactionType == TransactionType.Deposit)
-                return await Deposit(accountNumber, amount, comment);
-            else if (transactionType == TransactionType.Withdrawal)
-                return await Withdraw(accountNumber, amount, comment);
+            if (transactionType == null)
+                ModelState.AddModelError(nameof(transactionType), "Transaction type is required.");
+            if (accountNumber == 0)
+                ModelState.AddModelError(nameof(accountNumber), "Account number is required.");
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(ATM));
+            }
             else
-                return await Transfer(accountNumber, destAccountNumber, amount, comment);
+            {
+                if (transactionType == TransactionType.Deposit)
+                    return await Deposit(accountNumber, amount, comment);
+                else if (transactionType == TransactionType.Withdrawal)
+                    return await Withdraw(accountNumber, amount, comment);
+                else
+                    return await Transfer(accountNumber, destAccountNumber, amount, comment);
+            }
         }
 
 
@@ -288,6 +300,9 @@ namespace InternetBankingWebApp.Controllers
                 ModelState.AddModelError(nameof(amount), "Amount must be positive.");
             else if (amount.HasMoreThanTwoDecimalPlaces())
                 ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
+
+            if (accountNumber == 0)
+                ModelState.AddModelError(nameof(accountNumber), "Account number is required.");
 
             if (ModelState.IsValid)
             {
