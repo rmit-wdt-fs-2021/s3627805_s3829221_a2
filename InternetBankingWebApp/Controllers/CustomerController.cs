@@ -275,8 +275,13 @@ namespace InternetBankingWebApp.Controllers
 
 
         [HttpPost, Route("[action]"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditConfirmed([Bind("AccountNumber, PayeeID, Amount, ScheduleDate, Period, ModifyDate")] BillPay billPay)
+        public async Task<IActionResult> EditBillPay([Bind("AccountNumber, PayeeID, Amount, ScheduleDate, Period, ModifyDate")] BillPay billPay)
         {
+            if (billPay.Amount <= 0)
+                ModelState.AddModelError(nameof(billPay.Amount), "Amount must be positive.");
+            else if (billPay.Amount.HasMoreThanTwoDecimalPlaces())
+                ModelState.AddModelError(nameof(billPay.Amount), "Amount cannot have more than 2 decimal places.");
+
             if (ModelState.IsValid)
             {
                 try
