@@ -293,8 +293,10 @@ namespace InternetBankingWebApp.Controllers
                 Accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync(),
                 Payees = await _context.Payees.ToListAsync()
         };
+
+            ViewData["EditScheduleViewModel"] = editScheduleViewModel;
             
-            return View(editScheduleViewModel);
+            return View();
         }
 
 
