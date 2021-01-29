@@ -62,8 +62,11 @@ namespace InternetBankingWebApp.BackgroundServices
 
                         // Delete the BillPay if it's once-off
                         if (billPay.Period == Period.OnceOff)
-                            billPay.Account.BillPays.Remove(billPay);
-                        // Advance the schedule by the period for monthly and quarterly BillPays
+                            context.Remove(billPay);
+                        else if (billPay.Period == Period.Monthly)
+                            billPay.ScheduleDate.AddMonths(1);
+                        else if (billPay.Period == Period.Quarterly)
+                            billPay.ScheduleDate.AddMonths(3);
 
                         await context.SaveChangesAsync(cancellationToken);
 
