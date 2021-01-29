@@ -60,14 +60,19 @@ namespace InternetBankingWebApp.BackgroundServices
                     {
                         billPay.Account.PayBill(billPay.Amount, billPay.Payee);
 
-                        // Delete the BillPay if it's once-off
                         if (billPay.Period == Period.OnceOff)
                             context.Remove(billPay);
                         else if (billPay.Period == Period.Monthly)
+                        {
                             billPay.ScheduleDate.AddMonths(1);
+                            context.Update(billPay);
+                        }
                         else if (billPay.Period == Period.Quarterly)
+                        {
                             billPay.ScheduleDate.AddMonths(3);
-
+                            context.Update(billPay);
+                        }
+                            
                         await context.SaveChangesAsync(cancellationToken);
 
                         _logger.LogInformation("The bill payment from {0} to {1} is complete.",
