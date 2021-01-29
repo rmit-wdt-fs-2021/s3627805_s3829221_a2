@@ -305,14 +305,6 @@ namespace InternetBankingWebApp.Controllers
         {
             var billPay = await _context.BillPays.SingleAsync(x => x.BillPayID == billPayID);
 
-            //if (amount <= 0)
-            //    ModelState.AddModelError(nameof(amount), "Amount must be positive.");
-            //else if (amount.HasMoreThanTwoDecimalPlaces())
-            //    ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
-
-            //if (accountNumber == 0)
-            //    ModelState.AddModelError(nameof(accountNumber), "Account number is required.");
-
             if (ModelState.IsValid)
             {
                 billPay.AccountNumber = accountNumber;
