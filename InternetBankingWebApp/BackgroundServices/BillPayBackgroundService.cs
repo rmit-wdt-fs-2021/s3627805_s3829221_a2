@@ -61,16 +61,21 @@ namespace InternetBankingWebApp.BackgroundServices
                         billPay.Account.PayBill(billPay.Amount, billPay.Payee);
 
                         if (billPay.Period == Period.OnceOff)
+                        {
                             context.Remove(billPay);
+                            _logger.LogInformation("The bill schedule of {0} is closed.", billPay.BillPayID);
+                        }
                         else if (billPay.Period == Period.Monthly)
                         {
-                            billPay.ScheduleDate.AddMonths(1);
+                            billPay.ScheduleDate = billPay.ScheduleDate.AddMonths(1);
                             context.Update(billPay);
+                            _logger.LogInformation("The next schedule of bill {0} is one month later.", billPay.BillPayID);
                         }
                         else if (billPay.Period == Period.Quarterly)
                         {
-                            billPay.ScheduleDate.AddMonths(3);
+                            billPay.ScheduleDate = billPay.ScheduleDate.AddMonths(3);
                             context.Update(billPay);
+                            _logger.LogInformation("The next schedule of bill {0} is three months later.", billPay.BillPayID);
                         }
                             
                         await context.SaveChangesAsync(cancellationToken);
