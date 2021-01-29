@@ -27,15 +27,20 @@
         @foreach (var transaction in transactionList)
         {
             <tr>
-                <td>@Html.DisplayFor(x => transaction.TransactionID)</td>
-                <td>@Html.DisplayFor(x => transaction.TransactionType)</td>
-                <td>@Html.DisplayFor(x => transaction.AccountNumber)</td>
-                <td>@Html.DisplayFor(x => transaction.DestAccountNumber)</td>
-                <td>@Html.DisplayFor(x => transaction.Amount)</td>
-                <td>@Html.DisplayFor(x => transaction.Comment)</td>
-                <td>@Html.DisplayFor(x => transaction.ModifyDate.ToLocalTime())</td>
+                @{
+                    <td>@Html.DisplayFor(x => transaction.TransactionID)</td>
+                    <td>@Html.DisplayFor(x => transaction.TransactionType)</td>
+                    <td>@Html.DisplayFor(x => transaction.AccountNumber)</td>
+                    <td>@Html.DisplayFor(x => transaction.DestAccountNumber)</td>
+                    <td>@Html.DisplayFor(x => transaction.Amount)</td>
+                    <td>@Html.DisplayFor(x => transaction.Comment)</td>
+                    DateTime date = transaction.ModifyDate.ToLocalTime();
+                    <td>@Html.DisplayFor(x => date)</td>
+                }
+
             </tr>
         }
+
     </table>
 
     @Html.PagedListPager(transactionList, page => Url.Action("MyStatement", new { page }),
