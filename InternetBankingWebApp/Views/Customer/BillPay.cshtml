@@ -16,12 +16,13 @@
     }
     <h1>BillPay</h1>
 
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     @*Payee id*@
     <div class="form-group row">
         <label for="toPayee" class="col-sm-2 col-form-label"> To Payee </label>
         <div class="col-sm-10">
             <div class="form-group">
-                <select asp-for="@Model.PayeeID" class="form-control" id="payeeID" name="payeeID">
+                <select asp-for="PayeeID" class="form-control" id="payeeID" name="payeeID">
 
                     <option value="" disabled selected>Select your option</option>
                     @{
@@ -32,6 +33,8 @@
                         }
                     }
                 </select>
+                <span asp-validation-for="PayeeID" class="text-danger"></span>
+
             </div>
         </div>
     </div>
@@ -41,7 +44,8 @@
         <label for="amount" class="col-sm-2 col-form-label">Amount</label>
         <div class="col-sm-10">
             <div class="form-group">
-                <input asp-for="@Model.Amount" type="number" class="form-control" id="amount" name="amount" min="0" step="0.01" oninput="checkInput(this)">
+                <input asp-for="Amount" type="number" class="form-control" id="amount" name="amount" min="0" step="0.01" oninput="checkInput(this)">
+                <span asp-validation-for="Amount" class="text-danger"></span>
             </div>
         </div>
     </div>
@@ -54,8 +58,8 @@
             <div class="form-group">
                 <div class="form-group">
                     <label class="control-label"></label>
-                    <input asp-for="@Model.ScheduleDate" id="date" name="scheduleString" type="text" class="form-control" value="" />
-                    <span class="text-danger"></span>
+                    <input asp-for="ScheduleDate" id="date" name="scheduleString" type="text" class="form-control" value="" />
+                    <span asp-validation-for="ScheduleDate" class="text-danger"></span>
                 </div>
 
                 @section Scripts
@@ -82,12 +86,13 @@
         <label for="period" class="col-sm-2 col-form-label"> Period </label>
         <div class="col-sm-10">
             <div class="form-group">
-                <select asp-for="@Model.Period" class="form-control" id="period" name="period">
+                <select asp-for="Period" class="form-control" id="period" name="period">
                     <option value="" disabled selected>Select your option</option>
                     <option value=@Period.Monthly>Monthly</option>
                     <option value=@Period.Quarterly>Quarterly</option>
                     <option value=@Period.OnceOff>Once-off</option>
                 </select>
+                <span asp-validation-for="Period" class="text-danger"></span>
             </div>
         </div>
     </div>
