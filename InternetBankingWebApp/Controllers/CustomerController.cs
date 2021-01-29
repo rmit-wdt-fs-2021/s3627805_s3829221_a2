@@ -199,7 +199,7 @@ namespace InternetBankingWebApp.Controllers
 
 
         [HttpPost, Route("[action]")]
-        public async Task<IActionResult> GetBillPayAccount(int accountID)
+        public IActionResult GetBillPayAccount(int accountID)
         {
             HttpContext.Session.SetInt32("AccountID", accountID);
 
@@ -274,23 +274,27 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> EditBillPay(int billPayID, int accountNumber, int payeeID, decimal amount, DateTime schedule, Period period)
+        [HttpPost, ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditBillPay([Bind("AccountNumber, PayeeID, Amount, ScheduleDate, Period, ModifyDate")] BillPay billPay)
         {
-            var billPay = await _context.BillPays.SingleAsync(x => x.BillPayID == billPayID);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(billPay);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
 
-            billPay.AccountNumber = accountNumber;
-            billPay.Account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
-            billPay.PayeeID = payeeID;
-            billPay.Payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
-            billPay.Amount = amount;
-            billPay.ScheduleDate = schedule;
-            billPay.Period = period;
-            billPay.ModifyDate = DateTime.UtcNow;
-
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction(nameof(DisplayBillPays));
+                return RedirectToAction(nameof(DisplayBillPays));
+            }
+            else
+            {
+                return View(billPay);
+            }
         }
 
 
