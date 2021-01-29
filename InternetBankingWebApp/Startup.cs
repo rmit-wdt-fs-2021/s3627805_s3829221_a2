@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using InternetBankingWebApp.Data;
+using InternetBankingWebApp.BackgroundServices;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace InternetBankingWebApp
 {
@@ -20,13 +19,34 @@ namespace InternetBankingWebApp
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
+            // Register context class
+            services.AddDbContext<InternetBankingContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString(nameof(InternetBankingContext)));
+                options.UseLazyLoadingProxies();
+            });
+
+            // Enable BillPay background service
+            services.AddHostedService<BillPayBackgroundService>();
+
+            // Store session into the memory of the web server
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                
+                options.Cookie.IsEssential = true;
+
+                // Add expiry time for session
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
+
             services.AddControllersWithViews();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -36,14 +56,13 @@ namespace InternetBankingWebApp
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
-
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -1,0 +1,60 @@
+﻿@model List<BillPay>
+@{
+    ViewData["Title"] = "DisplayBillPays";
+    List<BillPay> billPays = Model;
+}
+
+<h1>My Bill Pays</h1>
+
+<div>
+    <table class="table">
+        <tr>
+            <th> </th>
+            <th>Payee</th>
+            <th>@Html.DisplayNameFor(x => billPays[0].Amount)</th>
+            <th>@Html.DisplayNameFor(x => billPays[0].ScheduleDate)</th>
+            <th>@Html.DisplayNameFor(x => billPays[0].Period)</th>
+        </tr>
+        @{
+            if (billPays.Count == 0)
+            {
+                <h2>No bill pay found.</h2>
+            }
+            else
+            {
+                foreach (BillPay billPay in billPays)
+                {
+
+                    <tr>
+                        <td>
+                            <form asp-action="EditBillPay">
+                                <input hidden value="@billPay.BillPayID" name="billPayID">
+                                <div class="form-group">
+                                    <input type="submit" value="Modify" class="btn btn-primary" />
+                                </div>
+                            </form>
+                        </td>
+
+                        @{
+                            <td>@Html.DisplayFor(x => billPay.Payee.PayeeName)</td>
+                            <td>@Html.DisplayFor(x => billPay.Amount)</td>
+                            DateTime date = billPays[0].ScheduleDate.ToLocalTime();
+                            <td>@Html.DisplayFor(x => date)</td>
+                            <td>@Html.DisplayFor(x => billPays[0].Period)</td>
+                        }
+
+                    </tr>
+                }
+            }
+        }
+    </table>
+    <form asp-action="BillPay">
+        <div class="form-group">
+            <input type="submit" value="Add bill pay" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+
+<div>
+    <a asp-action="Index">Back to Dashboard</a>
+</div>

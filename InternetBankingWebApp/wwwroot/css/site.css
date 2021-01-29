@@ -43,6 +43,7 @@ html {
 }
 
 .box-shadow {
+  /* ReSharper disable once RequiresFallbackColor */
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
@@ -69,3 +70,11 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+/* Make ReSharper ignore .control-label as UnknownCssClass. */
+/* ReSharper disable once DeclarationIsEmpty */
+.control-label { }
+
+/* Make ReSharper ignore .navbar-toggleable-sm as UnknownCssClass. */
+/* ReSharper disable once DeclarationIsEmpty */
+.navbar-toggleable-sm { }

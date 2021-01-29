@@ -1,0 +1,160 @@
+﻿@using InternetBankingWebApp.ViewModels;
+@using System.Threading;
+@using System.Globalization;
+@model BillPay;
+
+@{
+    ViewData["Title"] = "Edit bill pay";
+    EditScheduleViewModel editScheduleViewModel = (EditScheduleViewModel)ViewData["EditScheduleViewModel"];
+}
+
+@{
+    BillPay billPay = editScheduleViewModel.BillPay;
+    List<Account> accounts = editScheduleViewModel.Accounts;
+    List<Payee> Payees = editScheduleViewModel.Payees;
+}
+
+<form asp-controller="Customer" asp-action="ConfirmEdit" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input asp-for="BillPayID" hidden id="billID" name="billPayID" type="text" class="form-control" value="@billPay.BillPayID" />
+
+    @*Account*@
+    <div class="form-group row">
+        <label for="account" class="col-sm-2 col-form-label"> Account </label>
+        <div class="col-sm-10">
+            <div class="form-group">
+                <select asp-for="AccountNumber" class="form-control" id="accountNumber" name="accountNumber">
+                    @{
+                        foreach (Account account in accounts)
+                        {
+                            if (@account.AccountNumber == billPay.AccountNumber)
+                            {
+                                <option selected value=@account.AccountNumber> @account.AccountNumber </option>
+
+                            }
+                            else
+                            {
+                                <option value=@account.AccountNumber> @account.AccountNumber </option>
+                            }
+                        }
+                    }
+                </select>
+                <span asp-validation-for="AccountNumber" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    @*Payee id*@
+    <div class="form-group row">
+        <label for="toPayee" class="col-sm-2 col-form-label"> To Payee </label>
+        <div class="col-sm-10">
+            <div class="form-group">
+                <select asp-for="PayeeID" class="form-control" id="payeeID" name="payeeID">
+                    @{
+                        foreach (Payee payee in Payees)
+                        {
+                            var payeeInfo = payee.PayeeID + " " + payee.PayeeName;
+
+                            if (@payee.PayeeID == billPay.PayeeID)
+                            {
+                                <option selected value=@payee.PayeeID> @Html.DisplayFor(x => payeeInfo) </option>
+                            }
+
+                            <option value=@payee.PayeeID> @Html.DisplayFor(x => payeeInfo) </option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="PayeeID" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    @*Amount*@
+    <div class="form-group row">
+        <label for="amount" class="col-sm-2 col-form-label">Amount</label>
+        <div class="col-sm-10">
+            <div class="form-group">
+                <input asp-for="Amount" type="number" class="form-control" id="amount" name="amount" min="0" step="0.01" oninput="checkInput(this)" value="@billPay.Amount">
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    @*DateTime picker*@
+
+    <div class="form-group row">
+        <label for="date" class="col-sm-2 col-form-label">Schedule date</label>
+        <div class="col-sm-10">
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="control-label"></label>
+                    <input asp-for="ScheduleDate" id="date" name="scheduleString" type="text" class="form-control" value="@billPay.ScheduleDate.ToLocalTime().ToString("MM/dd/yyyy h:mm tt")">
+
+                    <span asp-validation-for="ScheduleDate" class="text-danger"></span>
+                </div>
+
+                @section Scripts
+    {
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+                    <script>
+                        $(function () {
+                            $('#date').datetimepicker();
+                });
+                    </script>
+                }
+            </div>
+        </div>
+    </div>
+
+    @*Period*@
+    <div class="form-group row">
+        <label asp-for="Period" class="col-sm-2 col-form-label"> Period </label>
+        <div class="col-sm-10">
+            <div class="form-group">
+                <select asp-for="Period" class="form-control">
+                    @{
+                        if (billPay.Period == Period.Monthly)
+                        {
+                            <option selected value=@Period.Monthly>Monthly</option>
+                        }
+                        else
+                        {
+                            <option value=@Period.Monthly>Monthly</option>
+                        }
+
+                        if (billPay.Period == Period.Quarterly)
+                        {
+                            <option selected value=@Period.Quarterly>Quarterly</option>
+                        }
+                        else
+                        {
+                            <option value=@Period.Quarterly>Quarterly</option>
+                        }
+
+                        if (billPay.Period == Period.OnceOff)
+                        {
+                            <option selected value=@Period.OnceOff>OnceOff</option>
+                        }
+                        else
+                        {
+                            <option  value=@Period.OnceOff>OnceOff</option>
+                        }
+                    }
+                </select>
+                <span asp-validation-for="Period" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-primary" />
+    </div>
+</form>
+
