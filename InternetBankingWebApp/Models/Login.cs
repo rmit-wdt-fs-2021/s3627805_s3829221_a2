@@ -19,5 +19,6 @@ namespace InternetBankingWebApp.Models
         [Required, DisplayFormat(DataFormatString = "{0:dd/MM/yyyy hh:mm:ss tt}", ApplyFormatInEditMode = true)]
         [Display(Name = "Modify Date")]
         public DateTime ModifyDate { get; set; }
+        public bool IsBlocked { get; set; } = false;
     }
 }
