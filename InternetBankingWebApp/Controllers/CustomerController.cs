@@ -274,7 +274,7 @@ namespace InternetBankingWebApp.Controllers
         }
 
 
-        [HttpPost, ValidateAntiForgeryToken]
+        [HttpPost, Route("[action]"), ValidateAntiForgeryToken]
         public async Task<IActionResult> EditBillPay([Bind("AccountNumber, PayeeID, Amount, ScheduleDate, Period, ModifyDate")] BillPay billPay)
         {
             if (ModelState.IsValid)
