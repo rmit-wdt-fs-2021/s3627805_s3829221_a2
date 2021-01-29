@@ -33,7 +33,10 @@
                                 <option selected value=@account.AccountNumber> @account.AccountNumber </option>
 
                             }
-                            <option value=@account.AccountNumber> @account.AccountNumber </option>
+                            else
+                            {
+                                <option value=@account.AccountNumber> @account.AccountNumber </option>
+                            }
                         }
                     }
                 </select>
@@ -86,7 +89,7 @@
             <div class="form-group">
                 <div class="form-group">
                     <label class="control-label"></label>
-                    <input asp-for="ScheduleDate" id="date" name="scheduleString" type="text" class="form-control" value="@billPay.ScheduleDate.ToLocalTime().ToString("dd/MM/yyyy h/mm/ss tt")">
+                    <input asp-for="ScheduleDate" id="date" name="scheduleString" type="text" class="form-control" value="@billPay.ScheduleDate.ToLocalTime().ToString("MM/dd/yyyy h:mm tt")">
 
                     <span asp-validation-for="ScheduleDate" class="text-danger"></span>
                 </div>
@@ -121,19 +124,28 @@
                         {
                             <option selected value=@Period.Monthly>Monthly</option>
                         }
-                        <option value=@Period.Monthly>Monthly</option>
+                        else
+                        {
+                            <option value=@Period.Monthly>Monthly</option>
+                        }
 
                         if (billPay.Period == Period.Quarterly)
                         {
-                            <option selected value=@Period.Quarterly>Monthly</option>
+                            <option selected value=@Period.Quarterly>Quarterly</option>
                         }
-                        <option value=@Period.Quarterly>Monthly</option>
+                        else
+                        {
+                            <option value=@Period.Quarterly>Quarterly</option>
+                        }
 
                         if (billPay.Period == Period.OnceOff)
                         {
-                            <option selected value=@Period.OnceOff>Monthly</option>
+                            <option selected value=@Period.OnceOff>OnceOff</option>
                         }
-                        <option value=@Period.OnceOff>Monthly</option>
+                        else
+                        {
+                            <option  value=@Period.OnceOff>OnceOff</option>
+                        }
                     }
                 </select>
                 <span asp-validation-for="Period" class="text-danger"></span>
