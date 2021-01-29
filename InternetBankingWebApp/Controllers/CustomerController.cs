@@ -314,7 +314,7 @@ namespace InternetBankingWebApp.Controllers
             }
             else
             {
-                return View(billPay);
+                return View(nameof(EditBillPay));
             }
         }
 
