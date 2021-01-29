@@ -52,10 +52,10 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("[action]")]
         public async Task<IActionResult> ATMAction(TransactionType? transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
         {
-            if (transactionType == null)
-                ModelState.AddModelError(nameof(transactionType), "Transaction type is required.");
-            if (accountNumber == 0)
-                ModelState.AddModelError(nameof(accountNumber), "Account number is required.");
+            //if (transactionType == null)
+            //    ModelState.AddModelError(nameof(transactionType), "Transaction type is required.");
+            //if (accountNumber == 0)
+            //    ModelState.AddModelError(nameof(accountNumber), "Account number is required.");
 
             if (!ModelState.IsValid)
             {
@@ -250,10 +250,17 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("[action]")]
         public async Task<IActionResult> ScheduleBillPay(int payeeID, decimal amount, string scheduleString, Period period)
         {
-            if (amount <= 0)
-                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
-            else if (amount.HasMoreThanTwoDecimalPlaces())
-                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
+            //if (payeeID == 0)
+            //    ModelState.AddModelError(nameof(payeeID), "Payee ID is required.");
+
+            //if (amount <= 0)
+            //    ModelState.AddModelError(nameof(amount), "Amount must be positive.");
+            //else if (amount.HasMoreThanTwoDecimalPlaces())
+            //    ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
+
+            //if (period == 0)
+            //    ModelState.AddModelError(nameof(period), "Period is required.");
+
 
             if (!ModelState.IsValid)
             {
@@ -296,13 +303,13 @@ namespace InternetBankingWebApp.Controllers
         {
             var billPay = await _context.BillPays.SingleAsync(x => x.BillPayID == billPayID);
 
-            if (amount <= 0)
-                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
-            else if (amount.HasMoreThanTwoDecimalPlaces())
-                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
+            //if (amount <= 0)
+            //    ModelState.AddModelError(nameof(amount), "Amount must be positive.");
+            //else if (amount.HasMoreThanTwoDecimalPlaces())
+            //    ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
 
-            if (accountNumber == 0)
-                ModelState.AddModelError(nameof(accountNumber), "Account number is required.");
+            //if (accountNumber == 0)
+            //    ModelState.AddModelError(nameof(accountNumber), "Account number is required.");
 
             if (ModelState.IsValid)
             {
