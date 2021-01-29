@@ -5,10 +5,10 @@ using InternetBankingWebApp.Models;
 
 namespace InternetBankingWebApp.ViewModels
 {
-    public class BillPayViewModel
+    public class EditScheduleViewModel
     {
-        public Account Account { get; set; }
-        public List<Payee> Payees { get; set; }
+        public List<Account> Accounts { get; set; }
+        public List <Payee> Payees { get; set; }
         public BillPay BillPay { get; set; }
     }
 }

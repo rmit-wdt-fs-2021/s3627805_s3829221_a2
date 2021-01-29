@@ -268,22 +268,38 @@ namespace InternetBankingWebApp.Controllers
         [Route("[action]")]
         public async Task<IActionResult> EditBillPay(int billPayID)
         {
-            var billPay = await _context.BillPays.SingleAsync(x => x.BillPayID == billPayID);
-
-            return View(billPay);
+            var editScheduleViewModel = new EditScheduleViewModel
+            {
+                BillPay = await _context.BillPays.SingleAsync(x => x.BillPayID == billPayID),
+                Accounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync(),
+                Payees = await _context.Payees.ToListAsync()
+        };
+            
+            return View(editScheduleViewModel);
         }
 
 
-        [HttpPost, Route("[action]"), ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditBillPay([Bind("AccountNumber, PayeeID, Amount, ScheduleDate, Period, ModifyDate")] BillPay billPay)
+        [HttpPost, Route("[action]")]
+        public async Task<IActionResult> ConfirmEdit(int billPayID, int accountNumber, int payeeID, decimal amount, string scheduleString, Period period)
         {
-            if (billPay.Amount <= 0)
-                ModelState.AddModelError(nameof(billPay.Amount), "Amount must be positive.");
-            else if (billPay.Amount.HasMoreThanTwoDecimalPlaces())
-                ModelState.AddModelError(nameof(billPay.Amount), "Amount cannot have more than 2 decimal places.");
+            var billPay = await _context.BillPays.SingleAsync(x => x.BillPayID == billPayID);
+
+            if (amount <= 0)
+                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
+            else if (amount.HasMoreThanTwoDecimalPlaces())
+                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
 
             if (ModelState.IsValid)
             {
+                billPay.AccountNumber = accountNumber;
+                billPay.Account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
+                billPay.PayeeID = payeeID;
+                billPay.Payee = await _context.Payees.SingleAsync(x => x.PayeeID == payeeID);
+                billPay.Amount = amount;
+                billPay.ScheduleDate = DateTime.ParseExact(scheduleString, "MM/dd/yyyy h:mm tt", null).ToUniversalTime();
+                billPay.Period = period;
+                billPay.ModifyDate = DateTime.UtcNow;
+
                 try
                 {
                     _context.Update(billPay);
