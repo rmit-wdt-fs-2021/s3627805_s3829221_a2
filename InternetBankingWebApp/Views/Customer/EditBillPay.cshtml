@@ -1,0 +1,134 @@
+﻿@using InternetBankingWebApp.ViewModels;
+@using System.Threading;
+@using System.Globalization;
+@model BillPay
+@{
+    ViewData["Title"] = "BillPay";
+    BillPayViewModel billPayViewModel = (BillPayViewModel)ViewData["BillPayViewModel"];
+}
+
+<form asp-controller="Customer" asp-action="EditBillPay" method="post">
+    @*Transaction Type*@
+    @{
+        Account account = billPayViewModel.Account;
+        List<Payee> Payees = billPayViewModel.Payees;
+    }
+
+    @*modal*@
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    @*close button*@
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        Edit
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    @*Payee id*@
+                    <div class="form-group row">
+                        <label for="toPayee" class="col-sm-2 col-form-label"> To Payee </label>
+                        <div class="col-sm-10">
+                            <div class="form-group">
+                                <select asp-for="@Model.PayeeID" class="form-control" id="payeeID" name="payeeID">
+
+                                    <option value="" disabled selected>Select your option</option>
+                                    @{
+                                        foreach (Payee payee in Payees)
+                                        {
+                                            var payeeInfo = payee.PayeeID + " " + payee.PayeeName;
+                                            <option value=@payee.PayeeID> @Html.DisplayFor(x => payeeInfo) </option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Amount*@
+                    <div class="form-group row">
+                        <label for="amount" class="col-sm-2 col-form-label">Amount</label>
+                        <div class="col-sm-10">
+                            <div class="form-group">
+                                <input asp-for="@Model.Amount" type="number" class="form-control" id="amount" name="amount" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                            </div>
+                        </div>
+                    </div>
+
+                    @*DateTime picker*@
+
+                    <div class="form-group row">
+                        <label for="date" class="col-sm-2 col-form-label">Schedule date</label>
+                        <div class="col-sm-10">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label class="control-label"></label>
+                                    <input asp-for="@Model.ScheduleDate" id="date" name="scheduleString" type="text" class="form-control" value="" />
+                                    <span class="text-danger"></span>
+                                </div>
+
+                                @section Scripts
+                {
+                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+                                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+                                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+                                    <script>
+                                        $(function () {
+                                            $('#date').datetimepicker();
+                                        });
+                                    </script>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Period*@
+                    <div class="form-group row">
+                        <label for="period" class="col-sm-2 col-form-label"> Period </label>
+                        <div class="col-sm-10">
+                            <div class="form-group">
+                                <select asp-for="@Model.Period" class="form-control" id="period" name="period">
+                                    <option value="" disabled selected>Select your option</option>
+                                    <option value=@Period.Monthly>Monthly</option>
+                                    <option value=@Period.Quarterly>Quarterly</option>
+                                    <option value=@Period.OnceOff>Once-off</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                    <div class="form-group">
+                        <input type="submit" value="Submit" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+                   
+
+                    <script>
+                        function noNegativeInput() {
+                            var input = document.getElementById("amount").value
+                            if (input.length == 1) {
+                                input = input.replace(/[^1-9]/g, '')
+                            } else {
+                                input = input.replace(/\D/g, '')
+                            }
+                        }
+                    </script>
+                    
+</form>
+
