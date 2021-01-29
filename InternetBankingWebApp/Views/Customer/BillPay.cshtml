@@ -41,7 +41,7 @@
         <label for="amount" class="col-sm-2 col-form-label">Amount</label>
         <div class="col-sm-10">
             <div class="form-group">
-                <input asp-for="@Model.Amount" type="number" class="form-control" id="amount" name="amount" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                <input asp-for="@Model.Amount" type="number" class="form-control" id="amount" name="amount" min="0" step="0.01" oninput="checkInput()">
             </div>
         </div>
     </div>
