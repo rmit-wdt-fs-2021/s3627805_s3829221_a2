@@ -38,9 +38,9 @@
                         @{
                             <td>@Html.DisplayFor(x => billPay.Payee.PayeeName)</td>
                             <td>@Html.DisplayFor(x => billPay.Amount)</td>
-                            DateTime date = billPays[0].ScheduleDate.ToLocalTime();
+                            DateTime date = billPay.ScheduleDate.ToLocalTime();
                             <td>@Html.DisplayFor(x => date)</td>
-                            <td>@Html.DisplayFor(x => billPays[0].Period)</td>
+                            <td>@Html.DisplayFor(x => billPay.Period)</td>
                         }
 
                     </tr>
