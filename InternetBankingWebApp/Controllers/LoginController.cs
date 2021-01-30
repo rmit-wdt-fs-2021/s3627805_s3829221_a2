@@ -13,9 +13,7 @@ namespace InternetBankingWebApp.Controllers
     {
         private readonly InternetBankingContext _context;
 
-
         public LoginController(InternetBankingContext context) => _context = context;
-
 
         public IActionResult Login() => View();
 
@@ -26,9 +24,16 @@ namespace InternetBankingWebApp.Controllers
             var login = await _context.Logins.SingleOrDefaultAsync(x => x.LoginID == loginID);
 
             // Login failed
-            if(login == null || !PBKDF2.Verify(login.PasswordHash, password))
+            if (login == null || !PBKDF2.Verify(login.PasswordHash, password))
             { 
                 ModelState.AddModelError("LoginFailed", "Login failed, please try again.");
+                return View(new Login { LoginID = loginID });
+            }
+
+            // Login blocked
+            else if (login.IsBlocked)
+            {
+                ModelState.AddModelError("LoginBlocked", "Login account is blocked.");
                 return View(new Login { LoginID = loginID });
             }
 

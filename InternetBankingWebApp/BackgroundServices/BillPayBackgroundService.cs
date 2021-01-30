@@ -27,8 +27,6 @@ namespace InternetBankingWebApp.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("BillPay background service is running.");
-
             // Execute automatic bill pay when no shutdown request is received by web server
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -54,40 +52,51 @@ namespace InternetBankingWebApp.BackgroundServices
             var billPays = await context.BillPays.ToListAsync(cancellationToken);
             foreach (var billPay in billPays)
             {
+                // Skip blocked bill schedule
+                if (billPay.IsBlocked)
+                {
+                    _logger.LogInformation("The bill schedule {0} is blocked.", billPay.BillPayID);
+                    break;
+                }
+
+                // Execute payment when the schedule time comes
                 if (billPay.ScheduleDate.CompareTo(DateTime.UtcNow) <= 0)
                 {
+                    // Validation for minimum balance
                     try
                     {
                         billPay.Account.PayBill(billPay.Amount, billPay.Payee);
-
-                        if (billPay.Period == Period.OnceOff)
-                        {
-                            context.Remove(billPay);
-                            _logger.LogInformation("The bill schedule of {0} is closed.", billPay.BillPayID);
-                        }
-                        else if (billPay.Period == Period.Monthly)
-                        {
-                            billPay.ScheduleDate = billPay.ScheduleDate.AddMonths(1);
-                            context.Update(billPay);
-                            _logger.LogInformation("The next schedule of bill {0} is one month later.", billPay.BillPayID);
-                        }
-                        else if (billPay.Period == Period.Quarterly)
-                        {
-                            billPay.ScheduleDate = billPay.ScheduleDate.AddMonths(3);
-                            context.Update(billPay);
-                            _logger.LogInformation("The next schedule of bill {0} is three months later.", billPay.BillPayID);
-                        }
-                            
-                        await context.SaveChangesAsync(cancellationToken);
-
-                        _logger.LogInformation("The bill payment from {0} to {1} is complete.",
-                            billPay.AccountNumber, billPay.Payee.PayeeName);
                     }
                     catch (MinBalanceBreachException)
                     {
                         _logger.LogInformation("The bill payment from {0} to {1} is failed due to insufficient fund.",
                             billPay.AccountNumber, billPay.Payee.PayeeName);
+                        break;
                     }
+
+                    _logger.LogInformation("The bill payment from {0} to {1} is complete.",
+                        billPay.AccountNumber, billPay.Payee.PayeeName);
+
+                    // Modify the schedule date
+                    if (billPay.Period == Period.OnceOff)
+                    {
+                        context.Remove(billPay);
+                        _logger.LogInformation("The bill schedule of {0} is closed.", billPay.BillPayID);
+                    }
+                    else if (billPay.Period == Period.Monthly)
+                    {
+                        billPay.ScheduleDate = billPay.ScheduleDate.AddMonths(1);
+                        context.Update(billPay);
+                        _logger.LogInformation("The next schedule of bill {0} is one month later.", billPay.BillPayID);
+                    }
+                    else if (billPay.Period == Period.Quarterly)
+                    {
+                        billPay.ScheduleDate = billPay.ScheduleDate.AddMonths(3);
+                        context.Update(billPay);
+                        _logger.LogInformation("The next schedule of bill {0} is three months later.", billPay.BillPayID);
+                    }
+
+                    await context.SaveChangesAsync(cancellationToken);
                 }
             }
         }
