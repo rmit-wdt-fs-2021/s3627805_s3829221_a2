@@ -14,6 +14,7 @@ namespace InternetBankingWebApp.Models
     }
 
 
+    // Use of record since transaction should be immutable
     public record Transaction : IComparable<Transaction>
     {   
         [Display(Name = "Transaction ID")]
