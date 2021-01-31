@@ -43,5 +43,6 @@ namespace InternetBankingWebApp.Models
         [Display(Name = "Modify Date")]
         public DateTime ModifyDate { get; set; }
         public bool IsBlocked { get; set; } = false;
+        public bool IsFailed { get; set; }
     }
 }

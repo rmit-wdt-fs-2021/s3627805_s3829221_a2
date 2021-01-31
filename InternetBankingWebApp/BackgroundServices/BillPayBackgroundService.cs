@@ -56,7 +56,8 @@ namespace InternetBankingWebApp.BackgroundServices
                 if (billPay.IsBlocked)
                 {
                     _logger.LogInformation("The bill schedule {0} is blocked.", billPay.BillPayID);
-                    break;
+
+                    continue;
                 }
 
                 // Execute payment when the schedule time comes
@@ -69,9 +70,14 @@ namespace InternetBankingWebApp.BackgroundServices
                     }
                     catch (MinBalanceBreachException)
                     {
+                        billPay.IsFailed = true;
+                        context.Update(billPay);
+                        await context.SaveChangesAsync(cancellationToken);
+
                         _logger.LogInformation("The bill payment from {0} to {1} is failed due to insufficient fund.",
                             billPay.AccountNumber, billPay.Payee.PayeeName);
-                        break;
+
+                        continue;
                     }
 
                     _logger.LogInformation("The bill payment from {0} to {1} is complete.",
