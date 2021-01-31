@@ -1,6 +1,7 @@
 ﻿@model Login
 @{
     ViewData["Title"] = "Login";
+    Login login = Model;
 }
 
 <h1 class="display-4">Login</h1>
@@ -20,9 +21,10 @@
                 @Html.ValidationMessage("Password", new { @class = "text-danger" })
             </div>
             <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-primary" />
+                <input type="submit" value="Login" class="btn btn-primary" onclick="isBlocked()" />
             </div>
             @Html.ValidationMessage("LoginFailed", new { @class = "text-danger" })
+            @Html.ValidationMessage("LoginBlocked", new { @class = "text-danger" })
         </form>
     </div>
 </div>
