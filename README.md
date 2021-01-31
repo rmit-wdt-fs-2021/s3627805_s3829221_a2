@@ -6,7 +6,7 @@ Internet banking web application for WDT assignment 2 in flexible term 2021
 - s3627805 ZipengZheng
 - s3829221 Chenyu Xiao
 
-DI part is completed.
+Complete up to DI part
 
 ---
 
