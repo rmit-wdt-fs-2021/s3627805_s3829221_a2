@@ -37,16 +37,19 @@
                             </li>
                         }
 
+                        @*Home*@
                         <li class="nav-item ml-auto">
                             <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
 
+                        @*Privacy*@
+                        <li class="nav-item">
+                            <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+
                         @if (isLoggedIn)
                         {
-                            @*Privacy*@
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
+
 
                             @*ATM*@
                             <li class="nav-item">
