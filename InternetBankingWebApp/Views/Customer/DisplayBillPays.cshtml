@@ -14,6 +14,7 @@
             <th>@Html.DisplayNameFor(x => billPays[0].Amount)</th>
             <th>@Html.DisplayNameFor(x => billPays[0].ScheduleDate)</th>
             <th>@Html.DisplayNameFor(x => billPays[0].Period)</th>
+            <th>Availability</th>
             <th>Status</th>
         </tr>
         @{
@@ -44,11 +45,20 @@
             <td>@Html.DisplayFor(x => billPay.Period)</td>
             if (billPay.IsBlocked)
             {
-                <td>Blocked</td>
+                <td class="text-danger">Blocked</td>
             }
             else
             {
-                <td>Active</td>
+                <td class="text-success">Available</td>
+            }
+
+            if (billPay.IsFailed)
+            {
+                <td class="text-danger">Failed</td>
+            }
+            else
+            {
+                <td class="text-success">Awaiting</td>
             }
         }
 
