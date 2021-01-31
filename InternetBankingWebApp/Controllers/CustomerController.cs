@@ -52,9 +52,20 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("[action]")]
         public async Task<IActionResult> ATMAction(TransactionType? transactionType, int accountNumber, int destAccountNumber, decimal amount, string comment)
         {
+            if (transactionType == null)
+                ModelState.AddModelError(nameof(transactionType), "Transaction type is required.");
+            if (accountNumber == 0)
+                ModelState.AddModelError(nameof(accountNumber), "Account number is required.");
+
             if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(ATM));
+                var customerAccounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+                var allAccounts = await _context.Accounts.ToListAsync();
+                var accountList = new List<List<Account>>() { customerAccounts, allAccounts };
+
+                ViewData["AccountList"] = accountList;
+
+                return View(nameof(ATM));
             }
             else
             {
@@ -71,11 +82,6 @@ namespace InternetBankingWebApp.Controllers
         public async Task<IActionResult> Deposit(int accountNumber, decimal amount, string comment)
         {
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
-
-            if (amount <= 0)
-                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
-            else if (amount.HasMoreThanTwoDecimalPlaces())
-                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
 
             if (!ModelState.IsValid)
             {
@@ -94,11 +100,6 @@ namespace InternetBankingWebApp.Controllers
         public async Task<IActionResult> Withdraw(int accountNumber, decimal amount, string comment)
         {
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
-
-            if (amount <= 0)
-                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
-            else if (amount.HasMoreThanTwoDecimalPlaces())
-                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
 
             try
             {
@@ -127,13 +128,11 @@ namespace InternetBankingWebApp.Controllers
 
         public async Task<IActionResult> Transfer(int accountNumber, int destAccountNumber ,decimal amount, string comment)
         {
+            if (accountNumber == destAccountNumber)
+                ModelState.AddModelError(nameof(destAccountNumber), "Transferring to yourself is not allowed.");
+
             var account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber);
             var destAccount = await _context.Accounts.SingleAsync(x => x.AccountNumber == destAccountNumber);
-
-            if (amount <= 0)
-                ModelState.AddModelError(nameof(amount), "Amount must be positive.");
-            else if (amount.HasMoreThanTwoDecimalPlaces())
-                ModelState.AddModelError(nameof(amount), "Amount cannot have more than 2 decimal places.");
 
             try
             {
@@ -149,7 +148,13 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(ATM));
+                var customerAccounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+                var allAccounts = await _context.Accounts.ToListAsync();
+                var accountList = new List<List<Account>>() { customerAccounts, allAccounts };
+
+                ViewData["AccountList"] = accountList;
+
+                return View(nameof(ATM));
             }
             else
             {
@@ -245,9 +250,24 @@ namespace InternetBankingWebApp.Controllers
         [HttpPost, Route("[action]")]
         public async Task<IActionResult> ScheduleBillPay(int payeeID, decimal amount, string scheduleString, Period period)
         {
+            if (payeeID == 0)
+                ModelState.AddModelError(nameof(payeeID), "Payee ID is required.");
+            if (period == 0)
+                ModelState.AddModelError(nameof(period), "Period is required.");
+
             if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(BillPay));
+                var accountNumber = HttpContext.Session.GetInt32("AccountID");
+
+                var billPayViewModel = new BillPayViewModel
+                {
+                    Account = await _context.Accounts.SingleAsync(x => x.AccountNumber == accountNumber),
+                    Payees = await _context.Payees.ToListAsync()
+                };
+
+                ViewData["BillPayViewModel"] = billPayViewModel;
+
+                return View(nameof(BillPay));
             }
             else
             {

@@ -159,6 +159,7 @@ namespace InternetBankingWebApp.Models
                         AccountNumber = destAccount.AccountNumber,
                         Account = destAccount,
                         Amount = amount,
+                        Comment = comment,
                         ModifyDate = DateTime.UtcNow
                     });
             }
