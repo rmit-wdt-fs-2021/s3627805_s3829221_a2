@@ -115,7 +115,13 @@ namespace InternetBankingWebApp.Controllers
 
             if (!ModelState.IsValid)
             {
-                return RedirectToAction(nameof(ATM));
+                var customerAccounts = await _context.Accounts.Where(x => x.CustomerID == _customerID).ToListAsync();
+                var allAccounts = await _context.Accounts.ToListAsync();
+                var accountList = new List<List<Account>>() { customerAccounts, allAccounts };
+
+                ViewData["AccountList"] = accountList;
+
+                return View(nameof(ATM));
             }
             else
             {
