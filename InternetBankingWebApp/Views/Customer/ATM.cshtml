@@ -91,22 +91,25 @@
     </form>
 
     <script>
-        function disableSelection() {
+        function disableSelection()
+        {
             var type = document.getElementById("transactionType");
             var account = document.getElementById("account");
             var destAccount = document.getElementById("destAccount");
 
-            if (type.value == "@TransactionType.Deposit" || type.value == "@TransactionType.Withdrawal") {
+            if (type.value == "@TransactionType.Deposit" || type.value == "@TransactionType.Withdrawal")
+            {
                 account.disabled = false;
-
                 destAccount.disabled = true;
                 destAccount.value = null;
             }
-            else if (type.value == "@TransactionType.Transfer") {
-
+            else if (type.value == "@TransactionType.Transfer")
+            {
+                account.disabled = false;
                 destAccount.disabled = false;
-                destAccount.disabled = false;
-            } else {
+            }
+            else
+            {
                 account.disabled = true;
                 destAccount.disabled = true;
             }
